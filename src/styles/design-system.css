@@ -1,0 +1,266 @@
+/* Strong Luxury Cars Design System */
+
+:root {
+  /* Color Palette */
+  --slc-dark: #1a1a1a;
+  --slc-dark-alt: #2d2d2d;
+  --slc-bronze: #cd7f32;
+  --slc-bronze-alt: #b8860b;
+  --slc-white: #ffffff;
+  --slc-light-gray: #f5f5f5;
+  --slc-gray: #808080;
+  --slc-black: #000000;
+  
+  /* Status Colors */
+  --slc-success: #28a745;
+  --slc-warning: #ffc107;
+  --slc-error: #dc3545;
+  --slc-info: #17a2b8;
+  
+  /* Typography */
+  --font-hebrew: 'Heebo', 'Assistant', system-ui, sans-serif;
+  --font-english: 'Montserrat', system-ui, sans-serif;
+  --font-numbers: 'Roboto Mono', monospace;
+  
+  /* Font Sizes */
+  --text-heading-1: 3rem;
+  --text-heading-2: 2rem;
+  --text-heading-3: 1.5rem;
+  --text-body: 1rem;
+  --text-small: 0.875rem;
+  
+  /* Line Heights */
+  --line-height-heading-1: 1.2;
+  --line-height-heading-2: 1.3;
+  --line-height-heading-3: 1.4;
+  --line-height-body: 1.6;
+  --line-height-small: 1.5;
+  
+  /* Spacing */
+  --spacing-xs: 0.25rem;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 1.5rem;
+  --spacing-xl: 2rem;
+  --spacing-2xl: 3rem;
+  --spacing-3xl: 4rem;
+  
+  /* Border Radius */
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-2xl: 1.5rem;
+  
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  
+  /* Transitions */
+  --transition-fast: 150ms ease-in-out;
+  --transition-normal: 300ms ease-in-out;
+  --transition-slow: 500ms ease-in-out;
+  
+  /* Z-Index */
+  --z-dropdown: 1000;
+  --z-sticky: 1020;
+  --z-fixed: 1030;
+  --z-modal-backdrop: 1040;
+  --z-modal: 1050;
+  --z-popover: 1060;
+  --z-tooltip: 1070;
+}
+
+/* Dark Mode Variables (if needed in future) */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --slc-white: #1a1a1a;
+    --slc-dark: #ffffff;
+    --slc-light-gray: #2d2d2d;
+    --slc-gray: #a0a0a0;
+  }
+}
+
+/* Utility Classes */
+.text-hebrew {
+  font-family: var(--font-hebrew);
+}
+
+.text-english {
+  font-family: var(--font-english);
+}
+
+.text-numbers {
+  font-family: var(--font-numbers);
+}
+
+/* Component Mixins */
+.btn-base {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  border-radius: var(--radius-md);
+  transition: all var(--transition-normal);
+  transform: scale(1);
+  cursor: pointer;
+  border: none;
+  outline: none;
+}
+
+.btn-base:hover {
+  transform: scale(1.05);
+}
+
+.btn-base:focus {
+  outline: 2px solid var(--slc-bronze);
+  outline-offset: 2px;
+}
+
+.btn-base:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: scale(1);
+}
+
+/* Card Base */
+.card-base {
+  background-color: var(--slc-white);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--slc-light-gray);
+  box-shadow: var(--shadow-lg);
+  transition: all var(--transition-normal);
+}
+
+.card-base:hover {
+  box-shadow: var(--shadow-xl);
+  transform: scale(1.02);
+}
+
+/* Input Base */
+.input-base {
+  width: 100%;
+  padding: var(--spacing-md);
+  border: 1px solid var(--slc-light-gray);
+  border-radius: var(--radius-lg);
+  font-family: var(--font-hebrew);
+  text-align: right;
+  transition: all var(--transition-normal);
+}
+
+.input-base:focus {
+  outline: none;
+  border-color: var(--slc-bronze);
+  box-shadow: 0 0 0 2px rgba(205, 127, 50, 0.2);
+}
+
+/* Animation Keyframes */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes scaleUp {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.05);
+  }
+}
+
+@keyframes scaleDown {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(0.95);
+  }
+}
+
+@keyframes slideInFromRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideInFromLeft {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* Animation Classes */
+.animate-fade-in {
+  animation: fadeIn var(--transition-normal) ease-in-out;
+}
+
+.animate-scale-up {
+  animation: scaleUp var(--transition-normal) ease-in-out;
+}
+
+.animate-scale-down {
+  animation: scaleDown var(--transition-normal) ease-in-out;
+}
+
+.animate-slide-in-right {
+  animation: slideInFromRight var(--transition-normal) ease-in-out;
+}
+
+.animate-slide-in-left {
+  animation: slideInFromLeft var(--transition-normal) ease-in-out;
+}
+
+/* Responsive Breakpoints */
+@media (max-width: 640px) {
+  :root {
+    --text-heading-1: 2rem;
+    --text-heading-2: 1.5rem;
+    --text-heading-3: 1.25rem;
+  }
+}
+
+@media (max-width: 768px) {
+  :root {
+    --spacing-xl: 1.5rem;
+    --spacing-2xl: 2rem;
+    --spacing-3xl: 3rem;
+  }
+}
+
+/* Print Styles */
+@media print {
+  :root {
+    --slc-bronze: #000000;
+    --slc-dark: #000000;
+    --shadow-lg: none;
+    --shadow-xl: none;
+    --shadow-2xl: none;
+  }
+  
+  .btn-base:hover {
+    transform: none;
+  }
+  
+  .card-base:hover {
+    transform: none;
+    box-shadow: none;
+  }
+}

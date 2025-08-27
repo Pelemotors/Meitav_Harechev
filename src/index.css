@@ -1,0 +1,186 @@
+@import url('https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Assistant:wght@200;300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+  
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    font-family: 'Heebo', 'Assistant', 'Montserrat', system-ui, -apple-system, sans-serif;
+    line-height: 1.6;
+    direction: rtl;
+  }
+  
+  /* Hebrew text styling */
+  .hebrew {
+    font-family: 'Heebo', 'Assistant', system-ui, sans-serif;
+  }
+  
+  /* English text styling */
+  .english {
+    font-family: 'Montserrat', system-ui, sans-serif;
+  }
+  
+  /* Numbers styling */
+  .numbers {
+    font-family: 'Roboto Mono', monospace;
+  }
+}
+
+@layer components {
+  /* Button Components */
+  .btn-primary {
+    @apply bg-slc-bronze text-slc-white px-6 py-3 rounded-md font-bold hover:bg-slc-bronze-alt transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-slc-bronze focus:ring-offset-2;
+  }
+  
+  .btn-secondary {
+    @apply bg-transparent text-slc-bronze border-2 border-slc-bronze px-6 py-3 rounded-md font-bold hover:bg-slc-bronze hover:text-slc-white transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-slc-bronze focus:ring-offset-2;
+  }
+  
+  .btn-ghost {
+    @apply bg-transparent text-slc-bronze hover:bg-slc-bronze/10 px-6 py-3 rounded-md font-bold transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-slc-bronze focus:ring-offset-2;
+  }
+  
+  /* Card Components */
+  .card {
+    @apply bg-slc-white rounded-xl p-6 shadow-lg border border-slc-light-gray hover:shadow-xl transition-all duration-300 hover:scale-[1.02];
+  }
+  
+  .card-elevated {
+    @apply bg-slc-white rounded-xl p-6 shadow-xl border border-slc-bronze/30 hover:shadow-2xl transition-all duration-300 hover:scale-[1.02];
+  }
+  
+  /* Layout Components */
+  .section {
+    @apply py-20;
+  }
+  
+  .container {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+  
+  .grid-3 {
+    @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8;
+  }
+  
+  .grid-4 {
+    @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6;
+  }
+  
+  /* Background Gradients */
+  .hero-gradient {
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+  }
+  
+  .bronze-gradient {
+    background: linear-gradient(135deg, #cd7f32 0%, #b8860b 100%);
+  }
+  
+  /* Service Cards */
+  .service-card {
+    @apply min-h-[130px] bg-slc-dark p-6 rounded-xl border border-slc-bronze/20 hover:border-slc-bronze/40 transition-all duration-300;
+  }
+  
+  /* Typography */
+  .heading-1 {
+    @apply text-heading-1 font-bold text-slc-dark hebrew;
+  }
+  
+  .heading-2 {
+    @apply text-heading-2 font-semibold text-slc-dark hebrew;
+  }
+  
+  .heading-3 {
+    @apply text-heading-3 font-medium text-slc-dark hebrew;
+  }
+  
+  .body-text {
+    @apply text-body text-slc-gray hebrew leading-relaxed;
+  }
+  
+  .price-text {
+    @apply text-heading-2 font-bold text-slc-bronze numbers;
+  }
+  
+  /* Form Elements */
+  .input-field {
+    @apply w-full px-4 py-3 border border-slc-light-gray rounded-lg focus:ring-2 focus:ring-slc-bronze focus:border-transparent text-right hebrew transition-all duration-300;
+  }
+  
+  .textarea-field {
+    @apply w-full px-4 py-3 border border-slc-light-gray rounded-lg focus:ring-2 focus:ring-slc-bronze focus:border-transparent text-right hebrew resize-none transition-all duration-300;
+  }
+  
+  /* Navigation */
+  .nav-link {
+    @apply hover:text-slc-bronze transition-colors duration-300 hebrew;
+  }
+  
+  .nav-link-active {
+    @apply text-slc-bronze font-semibold hebrew;
+  }
+  
+  /* Badge Components */
+  .badge {
+    @apply inline-flex items-center justify-center px-3 py-1 text-sm font-medium rounded-full;
+  }
+  
+  .badge-primary {
+    @apply bg-slc-bronze text-slc-white;
+  }
+  
+  .badge-success {
+    @apply bg-slc-success text-slc-white;
+  }
+  
+  .badge-warning {
+    @apply bg-slc-warning text-slc-black;
+  }
+  
+  .badge-error {
+    @apply bg-slc-error text-slc-white;
+  }
+  
+  /* Loading States */
+  .skeleton {
+    @apply animate-pulse bg-slc-light-gray rounded;
+  }
+  
+  .skeleton-text {
+    @apply skeleton h-4 rounded;
+  }
+  
+  .skeleton-image {
+    @apply skeleton h-48 rounded-lg;
+  }
+  
+  /* Animations */
+  .fade-in {
+    @apply animate-fade-in;
+  }
+  
+  .scale-up {
+    @apply animate-scale-up;
+  }
+  
+  .scale-down {
+    @apply animate-scale-down;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}

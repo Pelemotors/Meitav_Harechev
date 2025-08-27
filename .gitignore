@@ -1,0 +1,66 @@
+# ==== Logs ====
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+dev-debug.log
+
+# ==== Dependencies / Package managers ====
+node_modules/
+.pnpm-store/
+.npm/
+.yarn/
+.yarn-cache/
+
+# ==== Build outputs (various frameworks) ====
+dist/
+dist-ssr/
+build/
+.out/
+out/
+.next/
+.nuxt/
+.svelte-kit/
+.remix/
+coverage/
+
+# ==== Caches ====
+.cache/
+.parcel-cache/
+.turbo/
+.eslintcache
+.stylelintcache
+vite.config.timestamp-*
+tsbuildinfo.tsbuildinfo
+*.tsbuildinfo
+
+# ==== Env & local config ====
+.env
+.env.*
+*.local
+
+# ==== Editors / OS ====
+.vscode/*
+!.vscode/extensions.json
+.idea/
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# ==== Hosting / tooling ====
+.vercel/
+.netlify/
+.taskmaster/
+tasks.json
+tasks/
+
+# ==== Misc project artifacts ====
+*.pid
+*.seed
+*.coveragerc

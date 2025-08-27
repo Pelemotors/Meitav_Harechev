@@ -1,0 +1,20 @@
+User-agent: *
+Allow: /
+
+# Sitemaps
+Sitemap: https://strongluxurycars.com/sitemap.xml
+Sitemap: https://strongluxurycars.com/sitemap-cars.xml
+
+# Disallow admin areas
+Disallow: /admin/
+Disallow: /api/
+
+# Crawl delay
+Crawl-delay: 1
+
+# Allow images and media
+Allow: /*.jpg
+Allow: /*.jpeg
+Allow: /*.png
+Allow: /*.gif
+Allow: /*.webp

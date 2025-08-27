@@ -1,0 +1,38 @@
+{
+  "name": "sitemap-server",
+  "version": "1.0.0",
+  "description": "Sitemap generation server for Strong Luxury Cars",
+  "main": "sitemap-server.js",
+  "scripts": {
+    "start": "node sitemap-server.js",
+    "dev": "nodemon sitemap-server.js",
+    "test": "node test-sitemap.js",
+    "api": "node api-server.js",
+    "api:dev": "nodemon api-server.js"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.53.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "exceljs": "^4.4.0",
+    "express": "^4.18.2",
+    "express-rate-limit": "^8.0.1",
+    "helmet": "^8.1.0",
+    "joi": "^18.0.1",
+    "morgan": "^1.10.1",
+    "multer": "^2.0.2",
+    "xlsx": "^0.18.5"
+  },
+  "devDependencies": {
+    "axios": "^1.6.0",
+    "nodemon": "^3.0.2"
+  },
+  "keywords": [
+    "sitemap",
+    "seo",
+    "supabase",
+    "express"
+  ],
+  "author": "Strong Luxury Cars",
+  "license": "MIT"
+}
