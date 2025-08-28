@@ -49,72 +49,8 @@ export async function searchCars(options: SearchOptions = {}): Promise<SearchRes
     random = false
   } = options;
 
-  try {
-    // Build query parameters
-    const params = new URLSearchParams();
-    
-    if (query.trim()) {
-      params.set('q', query.trim());
-    }
-    
-    if (page > 1) {
-      params.set('page', page.toString());
-    }
-    
-    if (limit !== 12) {
-      params.set('limit', limit.toString());
-    }
-    
-    if (sortBy !== 'date_added') {
-      params.set('sortBy', sortBy);
-    }
-    
-    if (sortOrder !== 'desc') {
-      params.set('sortOrder', sortOrder);
-    }
-    
-    if (random) {
-      params.set('random', 'true');
-    }
-    
-    // Add filters
-    Object.entries(filters).forEach(([key, value]) => {
-      if (value !== undefined && value !== null && value !== '') {
-        params.set(key, value.toString());
-      }
-    });
-
-    const response = await fetch(`${API_BASE_URL}/vehicles?${params.toString()}`);
-    
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    
-    const data = await response.json();
-    
-    // The API returns { vehicles: [...], pagination: {...} }
-    const vehicles = data.vehicles || [];
-    
-    // Transform the response to match our expected format
-    const cars = vehicles.map((car: any) => ({
-      ...car,
-      mileage: car.kilometers, // Map kilometers to mileage for compatibility
-      images: car.media_files?.map((media: any) => media.file_url) || [],
-      createdAt: new Date(car.created_at),
-      updatedAt: new Date(car.updated_at)
-    }));
-
-    return {
-      cars: cars as Car[],
-      total: data.pagination?.total || vehicles.length,
-      hasMore: data.pagination ? data.pagination.page < data.pagination.pages : vehicles.length === limit
-    };
-
-  } catch (error) {
-    console.error('Search error:', error);
-    // Fallback to Supabase if API fails
-    return await searchCarsSupabase(options);
-  }
+  // Use Supabase directly instead of API
+  return await searchCarsSupabase(options);
 }
 
 /**
@@ -134,7 +70,7 @@ async function searchCarsSupabase(options: SearchOptions = {}): Promise<SearchRe
   try {
     let queryBuilder = supabase
       .from('cars')
-      .select('*, media_files(*)', { count: 'exact' });
+      .select('*', { count: 'exact' });
 
     // Full-text search
     if (query.trim()) {
@@ -232,14 +168,53 @@ async function searchCarsSupabase(options: SearchOptions = {}): Promise<SearchRe
       throw new Error('שגיאה בחיפוש רכבים');
     }
 
+    // Get media files for all cars
+    const carIds = cars?.map(car => car.id) || [];
+    const { data: mediaFiles, error: mediaError } = await supabase
+      .from('media_files')
+      .select('*')
+      .in('car_id', carIds);
+
+    if (mediaError) {
+      console.error('Error fetching media files:', mediaError);
+    }
+
+    // Group media files by car ID
+    const mediaByCarId = (mediaFiles || []).reduce((acc, media: any) => {
+      if (!acc[media.car_id]) {
+        acc[media.car_id] = [];
+      }
+      acc[media.car_id].push(media);
+      return acc;
+    }, {} as Record<string, any[]>);
+
+    // Transform cars and add media
+    let transformedCars = (cars || []).map(car => {
+      const carMedia = mediaByCarId[car.id] || [];
+      const images = carMedia
+        .filter(media => media.type === 'image')
+        .map(media => media.url);
+      const video = carMedia
+        .filter(media => media.type === 'video')
+        .map(media => media.url)[0];
+
+      return {
+        ...car,
+        mileage: car.kilometers, // Map kilometers to mileage for compatibility
+        images,
+        video,
+        createdAt: new Date(car.created_at),
+        updatedAt: new Date(car.updated_at)
+      };
+    });
+
     // If random sorting is requested, shuffle the results
-    let shuffledCars = cars || [];
-    if (random && shuffledCars.length > 0) {
-      shuffledCars = shuffleArray([...shuffledCars]);
+    if (random && transformedCars.length > 0) {
+      transformedCars = shuffleArray([...transformedCars]);
     }
 
     return {
-      cars: shuffledCars as Car[],
+      cars: transformedCars as Car[],
       total: count || 0,
       hasMore: (count || 0) > offset + limit
     };
