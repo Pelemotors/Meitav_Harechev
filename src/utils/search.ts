@@ -2,7 +2,7 @@ import { supabase } from './supabase';
 import { Car } from '../types';
 
 // API Base URL
-const API_BASE_URL = 'http://localhost:3002/api';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3002/api';
 
 export interface SearchFilters {
   brand?: string;
