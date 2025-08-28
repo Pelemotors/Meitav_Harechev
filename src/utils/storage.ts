@@ -66,8 +66,9 @@ export const uploadMediaFile = async (file: File, carId: string): Promise<MediaF
       .insert({
         car_id: carId,
         filename: filename,
-        file_type: file.type,
-        file_size: file.size,
+        original_name: file.name,
+        type: file.type.startsWith('image/') ? 'image' : 'video',
+        size: fileToUpload.size,
         url: urlData.publicUrl
       })
       .select()
