@@ -3,32 +3,24 @@ import { User } from '../types';
 
 export const login = async (username: string, password: string): Promise<User | null> => {
   try {
-    // Check credentials against users table
-    const { data, error } = await supabase
-      .from('users')
-      .select('*')
-      .eq('username', username)
-      .eq('password_hash', password) // Simple password check
-      .single();
+    // Use Supabase Auth for login
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email: username, // Use username as email for now
+      password: password
+    });
 
-    if (error || !data) {
+    if (error || !data.user) {
       console.error('Login failed:', error);
       return null;
     }
 
-    // Update last login
-    await supabase
-      .from('users')
-      .update({ last_login: new Date().toISOString() })
-      .eq('id', data.id);
-
     // Store user in localStorage for session management
     const userData = {
-      id: data.id,
-      username: data.username,
-      email: data.email,
-      role: data.role,
-      lastLogin: data.last_login ? new Date(data.last_login) : undefined
+      id: data.user.id,
+      username: data.user.email?.split('@')[0] || 'admin',
+      email: data.user.email || '',
+      role: 'admin', // Default role for now
+      lastLogin: new Date()
     };
     
     localStorage.setItem('user', JSON.stringify(userData));
@@ -39,7 +31,8 @@ export const login = async (username: string, password: string): Promise<User | 
   }
 };
 
-export const logout = (): void => {
+export const logout = async (): Promise<void> => {
+  await supabase.auth.signOut();
   localStorage.removeItem('user');
 };
 

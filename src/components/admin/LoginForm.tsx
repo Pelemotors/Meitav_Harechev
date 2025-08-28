@@ -9,7 +9,7 @@ interface LoginFormProps {
 const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
   const { login } = useAuth();
   const [credentials, setCredentials] = useState({
-    username: '',
+    email: '',
     password: ''
   });
   const [showPassword, setShowPassword] = useState(false);
@@ -22,7 +22,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
     setError('');
 
     try {
-      const success = await login(credentials.username, credentials.password);
+      const success = await login(credentials.email, credentials.password);
       if (success) {
         onLogin();
       } else {
@@ -43,22 +43,22 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
             <Lock className="w-8 h-8 text-primary" />
           </div>
           <h1 className="text-2xl font-bold text-darkBlue mb-2">כניסה למנהלים</h1>
-          <p className="text-gray-600">מערכת ניהול AutoTest</p>
+          <p className="text-gray-600">מערכת ניהול </p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
             <label className="block text-right text-gray-700 font-medium mb-2">
-              שם משתמש
+              אימייל
             </label>
             <div className="relative">
               <User className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
               <input
-                type="text"
-                value={credentials.username}
-                onChange={(e) => setCredentials({ ...credentials, username: e.target.value })}
+                type="email"
+                value={credentials.email}
+                onChange={(e) => setCredentials({ ...credentials, email: e.target.value })}
                 className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-right"
-                placeholder="הכנס שם משתמש"
+                placeholder="הכנס אימייל"
                 required
               />
             </div>
@@ -105,8 +105,8 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
 
         <div className="mt-6 p-4 bg-gray-50 rounded-lg text-right">
           <p className="text-sm text-gray-600 mb-2">פרטי התחברות לדמו:</p>
-          <p className="text-sm"><strong>שם משתמש:</strong> admin</p>
-          <p className="text-sm"><strong>סיסמה:</strong> admin123</p>
+          <p className="text-sm"><strong>אימייל:</strong> slc@gmail.com</p>
+          <p className="text-sm"><strong>סיסמה:</strong> [הסיסמה שיצרת ב-Supabase]</p>
         </div>
       </div>
     </div>
