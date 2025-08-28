@@ -8,9 +8,9 @@ const mockCars: Car[] = [];
 // Upload media file directly to Supabase
 export const uploadMediaFile = async (file: File, carId: string): Promise<MediaFile> => {
   try {
-    // Validate file size (max 5MB)
-    if (file.size > 5 * 1024 * 1024) {
-      throw new Error('הקובץ גדול מדי. מקסימום 5MB');
+    // Validate file size (max 50MB - Supabase limit)
+    if (file.size > 50 * 1024 * 1024) {
+      throw new Error('הקובץ גדול מדי. מקסימום 50MB');
     }
 
     // Validate file type
