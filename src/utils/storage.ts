@@ -4,24 +4,49 @@ import { Car, MediaFile } from '../types';
 // Empty array for fallback when no data is available
 const mockCars: Car[] = [];
 
-// Upload media file via our API server
+// Upload media file directly to Supabase
 export const uploadMediaFile = async (file: File, carId: string): Promise<MediaFile> => {
   try {
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('carId', carId);
+    // Generate unique filename
+    const timestamp = Date.now();
+    const filename = `${carId}/${timestamp}_${file.name}`;
 
-    const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || '/api'}/vehicles/${carId}/media`, {
-      method: 'POST',
-      body: formData
-    });
+    // Upload to Supabase Storage
+    const { data: uploadData, error: uploadError } = await supabase.storage
+      .from('cars-media')
+      .upload(filename, file);
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+    if (uploadError) {
+      throw uploadError;
     }
 
-    const data = await response.json();
-    return data.media;
+    // Get public URL
+    const { data: urlData } = supabase.storage
+      .from('cars-media')
+      .getPublicUrl(filename);
+
+    // Save to database
+    const { data: mediaData, error: dbError } = await supabase
+      .from('media_files')
+      .insert({
+        car_id: carId,
+        filename: filename,
+        file_type: file.type,
+        file_size: file.size,
+        url: urlData.publicUrl
+      })
+      .select()
+      .single();
+
+    if (dbError) {
+      throw dbError;
+    }
+
+    return {
+      ...mediaData,
+      carId: mediaData.car_id,
+      createdAt: new Date(mediaData.created_at)
+    };
   } catch (error) {
     console.error('Error in uploadMediaFile:', error);
     throw error;
