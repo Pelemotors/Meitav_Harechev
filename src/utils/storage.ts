@@ -159,11 +159,11 @@ export const getCarsWithMedia = async (): Promise<Car[]> => {
 
     // Group media files by carId
     const mediaByCarId = (mediaFiles || []).reduce((acc, media: any) => {
-      if (media.carId) {
-        if (!acc[media.carId]) {
-          acc[media.carId] = [];
+      if (media.car_id) {
+        if (!acc[media.car_id]) {
+          acc[media.car_id] = [];
         }
-        acc[media.carId].push(media);
+        acc[media.car_id].push(media);
       }
       return acc;
     }, {} as Record<string, any[]>);

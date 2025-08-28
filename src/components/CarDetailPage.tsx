@@ -28,27 +28,43 @@ const CarDetailPage: React.FC = () => {
       setError(null);
       
       try {
-        // Try API first
-        const response = await fetch(`${API_BASE_URL}/vehicles/${id}`);
-        
-        if (response.ok) {
-          const data = await response.json();
-          
-          // Transform the response to match our expected format
-          const transformedCar = {
-            ...data,
-            mileage: data.kilometers, // Map kilometers to mileage for compatibility
-            images: data.media_files?.map((media: any) => media.file_url) || [],
-            createdAt: new Date(data.created_at),
-            updatedAt: new Date(data.updated_at)
-          };
-          
-          setCar(transformedCar as Car);
-        } else if (response.status === 404) {
+        // Load car directly from Supabase
+        const { data: carData, error: carError } = await supabase
+          .from('cars')
+          .select('*')
+          .eq('id', id)
+          .single();
+
+        if (carError) {
           throw new Error('רכב לא נמצא');
-        } else {
-          throw new Error('שגיאה בטעינת הרכב');
         }
+
+        // Load media files for this car
+        const { data: mediaData, error: mediaError } = await supabase
+          .from('media_files')
+          .select('*')
+          .eq('car_id', id)
+          .order('created_at', { ascending: false });
+
+        if (mediaError) {
+          console.error('Error loading media:', mediaError);
+        }
+
+        // Transform the data to match our expected format
+        const transformedCar = {
+          ...carData,
+          mileage: carData.kilometers, // Map kilometers to mileage for compatibility
+          images: (mediaData || [])
+            .filter((media: any) => media.type === 'image')
+            .map((media: any) => media.url),
+          video: (mediaData || [])
+            .filter((media: any) => media.type === 'video')
+            .map((media: any) => media.url)[0],
+          createdAt: new Date(carData.created_at),
+          updatedAt: new Date(carData.updated_at)
+        };
+        
+        setCar(transformedCar as Car);
       } catch (err) {
         // Fallback to Supabase if API fails
         try {
