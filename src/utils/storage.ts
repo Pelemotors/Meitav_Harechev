@@ -1,5 +1,6 @@
 import { supabase } from './supabase';
 import { Car, MediaFile } from '../types';
+import { optimizeImage } from './mediaOptimizer';
 
 // Empty array for fallback when no data is available
 const mockCars: Car[] = [];
@@ -18,6 +19,29 @@ export const uploadMediaFile = async (file: File, carId: string): Promise<MediaF
       throw new Error('סוג קובץ לא נתמך. רק תמונות ווידאו');
     }
 
+    // Compress images before upload
+    let fileToUpload = file;
+    if (file.type.startsWith('image/')) {
+      try {
+        const optimized = await optimizeImage(file, {
+          maxWidth: 1200,
+          maxHeight: 800,
+          quality: 0.8,
+          format: 'jpeg'
+        });
+        
+        // Convert optimized data URL back to File
+        const response = await fetch(optimized.optimized);
+        const blob = await response.blob();
+        fileToUpload = new File([blob], file.name, { type: 'image/jpeg' });
+        
+        console.log(`Image compressed: ${file.size} -> ${fileToUpload.size} bytes`);
+      } catch (error) {
+        console.error('Error compressing image:', error);
+        // Continue with original file if compression fails
+      }
+    }
+
     // Generate unique filename
     const timestamp = Date.now();
     const filename = `${carId}/${timestamp}_${file.name}`;
@@ -25,7 +49,7 @@ export const uploadMediaFile = async (file: File, carId: string): Promise<MediaF
     // Upload to Supabase Storage
     const { data: uploadData, error: uploadError } = await supabase.storage
       .from('cars-media')
-      .upload(filename, file);
+      .upload(filename, fileToUpload);
 
     if (uploadError) {
       throw uploadError;
