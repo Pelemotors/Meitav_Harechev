@@ -8,8 +8,7 @@ import AdminDashboard from './AdminDashboard';
 import CarsTable from './CarsTable';
 import CarForm from './CarForm';
 import LeadsManager from './LeadsManager';
-import WhatsAppIntegration from './WhatsAppIntegration';
-import WhatsAppTemplates from './WhatsAppTemplates';
+
 import SitemapManager from './SitemapManager';
 import SettingsManager from './SettingsManager';
 import { Plus } from 'lucide-react';
@@ -180,12 +179,6 @@ const AdminAppContent: React.FC = () => {
       
       case 'leads':
         return <LeadsManager />;
-      
-      case 'whatsapp':
-        return <WhatsAppIntegration />;
-      
-      case 'templates':
-        return <WhatsAppTemplates />;
       
       case 'sitemap':
         return <SitemapManager />;
