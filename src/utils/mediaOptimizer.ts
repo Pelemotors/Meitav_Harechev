@@ -56,12 +56,12 @@ export const optimizeImage = (
 };
 
 export const validateMediaFile = (file: File): { valid: boolean; error?: string } => {
-  const maxSize = 50 * 1024 * 1024; // 50MB
+  const maxSize = 5 * 1024 * 1024; // 5MB (Supabase limit)
   const allowedImageTypes = ['image/jpeg', 'image/png', 'image/webp'];
   const allowedVideoTypes = ['video/mp4', 'video/webm', 'video/mov'];
   
   if (file.size > maxSize) {
-    return { valid: false, error: 'הקובץ גדול מדי (מקסימום 50MB)' };
+    return { valid: false, error: 'הקובץ גדול מדי (מקסימום 5MB)' };
   }
   
   const isImage = allowedImageTypes.includes(file.type);

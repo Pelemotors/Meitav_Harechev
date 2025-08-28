@@ -7,6 +7,17 @@ const mockCars: Car[] = [];
 // Upload media file directly to Supabase
 export const uploadMediaFile = async (file: File, carId: string): Promise<MediaFile> => {
   try {
+    // Validate file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      throw new Error('הקובץ גדול מדי. מקסימום 5MB');
+    }
+
+    // Validate file type
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'video/mp4'];
+    if (!allowedTypes.includes(file.type)) {
+      throw new Error('סוג קובץ לא נתמך. רק תמונות ווידאו');
+    }
+
     // Generate unique filename
     const timestamp = Date.now();
     const filename = `${carId}/${timestamp}_${file.name}`;
