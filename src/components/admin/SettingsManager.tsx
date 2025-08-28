@@ -34,7 +34,7 @@ const SettingsManager: React.FC = () => {
   const loadSettings = async () => {
     setLoading(true);
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:3002/api'}/settings`);
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || '/api'}/settings`);
       if (response.ok) {
         const data = await response.json();
         setSettings(data);
@@ -59,7 +59,7 @@ const SettingsManager: React.FC = () => {
     setMessage(null);
     
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:3002/api'}/settings`, {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || '/api'}/settings`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(settings)

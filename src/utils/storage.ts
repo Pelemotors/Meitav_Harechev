@@ -11,7 +11,7 @@ export const uploadMediaFile = async (file: File, carId: string): Promise<MediaF
     formData.append('file', file);
     formData.append('carId', carId);
 
-    const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:3002/api'}/vehicles/${carId}/media`, {
+    const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || '/api'}/vehicles/${carId}/media`, {
       method: 'POST',
       body: formData
     });

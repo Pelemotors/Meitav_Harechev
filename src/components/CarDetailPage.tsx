@@ -10,7 +10,7 @@ import FinanceCalculator from './FinanceCalculator';
 import MarkdownRenderer from './MarkdownRenderer';
 
 // API Base URL
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3002/api';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api';
 
 const CarDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
