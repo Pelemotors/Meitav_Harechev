@@ -2,20 +2,19 @@ import React from 'react';
 import { Wrench, Shield, Car, Settings, Zap, CheckCircle, DollarSign, Users, TrendingUp } from 'lucide-react';
 
 const useWhatsApp = () => {
-  const sendWhatsAppMessage = (service: string) => {
-    const phoneNumber = '972505666620'; // מספר הטלפון עם קוד מדינה
-    const message = `שלום, אני מעוניין לקבל פרטים נוספים על ${service}`;
+  const sendWhatsAppMessage = (service: string, agentName: string) => {
+    let phoneNumber = '';
+    
+    if (agentName === 'אסי') {
+      phoneNumber = '972507422522'; // אסי
+    } else if (agentName === 'אלון') {
+      phoneNumber = '972535335540'; // אלון
+    }
+    
+    const message = `שלום ${agentName}, אני מעוניין לקבל פרטים נוספים על ${service}`;
     const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
     
-    // בדיקה אם זה מובייל
-    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-    
-    if (isMobile) {
-      window.open(whatsappUrl, '_blank');
-    } else {
-      // במחשב נפתח את הטופס צור קשר
-      document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
-    }
+    window.open(whatsappUrl, '_blank');
   };
   
   return { sendWhatsAppMessage };
@@ -126,12 +125,20 @@ const ServicesSection = () => {
               
               <div className="text-center">
                 <p className="text-primary font-bold text-lg mb-4">{service.price}</p>
-                <button 
-                  className="btn-primary w-full"
-                  onClick={() => sendWhatsAppMessage(service.title)}
-                >
-                  פרטים נוספים
-                </button>
+                <div className="flex gap-2">
+                  <button 
+                    className="btn-primary flex-1 text-sm"
+                    onClick={() => sendWhatsAppMessage(service.title, 'אסי')}
+                  >
+                    אסי
+                  </button>
+                  <button 
+                    className="btn-primary flex-1 text-sm"
+                    onClick={() => sendWhatsAppMessage(service.title, 'אלון')}
+                  >
+                    אלון
+                  </button>
+                </div>
               </div>
             </div>
           ))}

@@ -269,7 +269,7 @@ const LeadDetail: React.FC<LeadDetailProps> = ({ leadId, onBack }) => {
             <ArrowRight className="w-4 h-4" />
             חזור לרשימה
           </button>
-          <div>
+        <div>
             <h1 className="text-2xl font-bold text-gray-900">
               {lead.first_name} {lead.last_name}
             </h1>
@@ -305,8 +305,8 @@ const LeadDetail: React.FC<LeadDetailProps> = ({ leadId, onBack }) => {
                   שם פרטי
                 </label>
                 {editing ? (
-                  <input
-                    type="text"
+                    <input
+                      type="text"
                     value={lead.first_name}
                     onChange={(e) => setLead({...lead, first_name: e.target.value})}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-right"
@@ -338,13 +338,13 @@ const LeadDetail: React.FC<LeadDetailProps> = ({ leadId, onBack }) => {
                 </label>
                 <div className="flex items-center gap-2">
                   {editing ? (
-                    <input
-                      type="tel"
+                  <input
+                    type="tel"
                       value={lead.phone}
                       onChange={(e) => setLead({...lead, phone: e.target.value})}
                       className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-right"
-                    />
-                  ) : (
+                  />
+                ) : (
                     <>
                       <p className="text-gray-900">{lead.phone}</p>
                       <button className="text-primary hover:text-primary-dark">
@@ -355,7 +355,7 @@ const LeadDetail: React.FC<LeadDetailProps> = ({ leadId, onBack }) => {
                 </div>
               </div>
 
-              <div>
+                <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   אימייל
                 </label>
@@ -397,9 +397,9 @@ const LeadDetail: React.FC<LeadDetailProps> = ({ leadId, onBack }) => {
                   <X className="w-4 h-4" />
                   בטל
                 </button>
-              </div>
-            )}
-          </div>
+                </div>
+              )}
+            </div>
 
           {/* הערות */}
           <div className="bg-white rounded-lg shadow-sm border p-6">
@@ -570,12 +570,12 @@ const LeadDetail: React.FC<LeadDetailProps> = ({ leadId, onBack }) => {
                 <Plus className="w-4 h-4" />
                 הוסף משימה
               </button>
-            </div>
+          </div>
 
             {showAddTask && (
               <div className="mb-6 p-4 border border-gray-200 rounded-lg bg-gray-50">
                 <h3 className="text-md font-medium text-gray-900 mb-4">משימה חדשה</h3>
-                <div className="space-y-4">
+          <div className="space-y-4">
                   <input
                     type="text"
                     placeholder="כותרת המשימה"
@@ -631,7 +631,7 @@ const LeadDetail: React.FC<LeadDetailProps> = ({ leadId, onBack }) => {
                 </div>
               </div>
             )}
-
+            
             <div className="space-y-3">
               {tasks.map((task) => (
                 <div key={task.id} className="border border-gray-200 rounded-lg p-4">
@@ -689,40 +689,40 @@ const LeadDetail: React.FC<LeadDetailProps> = ({ leadId, onBack }) => {
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   סטטוס ליד
                 </label>
-                <select
+                  <select
                   value={lead.status}
                   onChange={(e) => updateLead({ status: e.target.value })}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
-                >
-                  <option value="new">חדש</option>
+                  >
+                    <option value="new">חדש</option>
                   <option value="contacted">יצרתי קשר</option>
-                  <option value="qualified">מתאים</option>
+                    <option value="qualified">מתאים</option>
                   <option value="converted">התגייר</option>
                   <option value="lost">אבד</option>
-                </select>
+                  </select>
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   עדיפות
                 </label>
-                <select
+                  <select
                   value={lead.priority}
                   onChange={(e) => updateLead({ priority: e.target.value })}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
-                >
-                  <option value="low">נמוך</option>
-                  <option value="medium">בינוני</option>
-                  <option value="high">גבוה</option>
-                  <option value="urgent">דחוף</option>
-                </select>
+                  >
+                    <option value="low">נמוך</option>
+                    <option value="medium">בינוני</option>
+                    <option value="high">גבוה</option>
+                    <option value="urgent">דחוף</option>
+                  </select>
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   סוג ליד
                 </label>
-                <select
+                  <select
                   value={lead.lead_type}
                   onChange={(e) => updateLead({ lead_type: e.target.value })}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
@@ -731,10 +731,10 @@ const LeadDetail: React.FC<LeadDetailProps> = ({ leadId, onBack }) => {
                   <option value="car_inquiry">חקירה על רכב</option>
                   <option value="financing">מימון</option>
                   <option value="service">שירות</option>
-                </select>
-              </div>
+                  </select>
             </div>
           </div>
+        </div>
 
           {/* מידע על התקציב */}
           {(lead.budget_min || lead.budget_max || lead.financing_needed) && (
@@ -743,41 +743,41 @@ const LeadDetail: React.FC<LeadDetailProps> = ({ leadId, onBack }) => {
               
               <div className="space-y-3">
                 {lead.budget_min && (
-                  <div>
+            <div>
                     <span className="text-sm text-gray-600">תקציב מינימלי:</span>
                     <p className="font-medium">₪{lead.budget_min.toLocaleString()}</p>
-                  </div>
-                )}
-                
+                </div>
+              )}
+
                 {lead.budget_max && (
-                  <div>
+            <div>
                     <span className="text-sm text-gray-600">תקציב מקסימלי:</span>
                     <p className="font-medium">₪{lead.budget_max.toLocaleString()}</p>
-                  </div>
-                )}
+                </div>
+              )}
                 
                 {lead.financing_needed && (
                   <div className="p-3 bg-blue-50 rounded-lg">
                     <div className="flex items-center gap-2 text-blue-800">
                       <DollarSign className="w-4 h-4" />
                       <span className="font-medium">מעוניין במימון</span>
-                    </div>
-                    
+        </div>
+
                     {lead.down_payment && (
                       <p className="text-sm text-blue-700 mt-1">
                         מקדמה: ₪{lead.down_payment.toLocaleString()}
-                      </p>
-                    )}
+                </p>
+              )}
                     
                     {lead.monthly_payment_max && (
                       <p className="text-sm text-blue-700">
                         החזר חודשי מקסימלי: ₪{lead.monthly_payment_max.toLocaleString()}
                       </p>
-                    )}
-                  </div>
-                )}
-              </div>
+                  )}
+                </div>
+              )}
             </div>
+          </div>
           )}
 
           {/* מידע על התאריכים */}
@@ -788,28 +788,28 @@ const LeadDetail: React.FC<LeadDetailProps> = ({ leadId, onBack }) => {
               <div>
                 <span className="text-sm text-gray-600">נוצר:</span>
                 <p className="font-medium">{new Date(lead.created_at).toLocaleDateString('he-IL')}</p>
-              </div>
-              
+        </div>
+
               <div>
                 <span className="text-sm text-gray-600">עודכן:</span>
                 <p className="font-medium">{new Date(lead.updated_at).toLocaleDateString('he-IL')}</p>
-              </div>
-              
+        </div>
+
               {lead.last_contact_at && (
                 <div>
                   <span className="text-sm text-gray-600">קשר אחרון:</span>
                   <p className="font-medium">{new Date(lead.last_contact_at).toLocaleDateString('he-IL')}</p>
-                </div>
-              )}
+          </div>
+        )}
               
               <div>
                 <span className="text-sm text-gray-600">מקור:</span>
                 <p className="font-medium">{lead.source}</p>
-              </div>
-            </div>
           </div>
         </div>
-      </div>
+          </div>
+        </div>
+        </div>
     </div>
   );
 };
