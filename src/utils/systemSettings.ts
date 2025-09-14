@@ -402,7 +402,7 @@ class SystemSettingsManager {
       },
       {
         key: 'companyPhone',
-        value: '050-1234567',
+        value: '050-7422522 / 053-5335540',
         type: 'string',
         category: 'general',
         description: 'טלפון החברה',

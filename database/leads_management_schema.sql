@@ -294,7 +294,7 @@ INSERT INTO message_templates (name, category, template_type, subject, content, 
 נציגנו יצור איתך קשר בהקדם כדי לעזור לך למצוא את הרכב המתאים ביותר.
 
 פרטי התקשרות שלנו:
-אסי: 050-7422522
+אסי: 050-7422522 | אלון: 053-5335540
 אלון: 053-5335540
 
 בברכה,
@@ -308,7 +308,7 @@ INSERT INTO message_templates (name, category, template_type, subject, content, 
 
 מתי נוח לך?
 
-אסי: 050-7422522
+אסי: 050-7422522 | אלון: 053-5335540
 אלון: 053-5335540', 
 '["firstName", "phone"]'),
 
@@ -319,7 +319,7 @@ INSERT INTO message_templates (name, category, template_type, subject, content, 
 
 האם עדיין מעוניין ברכב? יש לנו הצעות חדשות שעלולות לעניין אותך.
 
-אסי: 050-7422522', 
+אסי: 050-7422522 | אלון: 053-5335540', 
 '["firstName", "phone"]');
 
 -- יצירת View לסיכום לידים

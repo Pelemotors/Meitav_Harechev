@@ -103,8 +103,8 @@ ${formData.financingNeeded ? 'מעוניין במימון' : ''}
     <section id="contact" className="section bg-white">
       <div className="container mx-auto px-8">
         <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold text-slc-dark mb-4">דברו איתנו – אנחנו כאן בשבילכם</h2>
-          <p className="text-slc-gray text-lg max-w-3xl mx-auto">
+          <h2 className="text-4xl font-bold text-neutral-900 mb-4">דברו איתנו – אנחנו כאן בשבילכם</h2>
+          <p className="text-neutral-600 text-lg max-w-3xl mx-auto">
             מתלבטים איזה רכב מתאים לכם?<br />
             רוצים ייעוץ אישי ולשמוע על אפשרויות מימון משתלמות?<br />
             אנחנו זמינים לכל שאלה – נשמח לעזור לכם למצוא את הרכב הבא שלכם.
@@ -114,13 +114,13 @@ ${formData.financingNeeded ? 'מעוניין במימון' : ''}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
           {/* Contact Form - Right Side */}
           <div>
-            <h3 className="text-2xl font-bold text-slc-dark mb-6 text-right">שלח הודעה</h3>
+            <h3 className="text-2xl font-bold text-neutral-900 mb-6 text-right">שלח הודעה</h3>
             
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* פרטים אישיים */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-right text-slc-gray font-medium mb-2">
+                  <label className="block text-right text-neutral-600 font-medium mb-2">
                     שם פרטי *
                   </label>
                   <input
@@ -135,7 +135,7 @@ ${formData.financingNeeded ? 'מעוניין במימון' : ''}
                 </div>
                 
                 <div>
-                  <label className="block text-right text-slc-gray font-medium mb-2">
+                  <label className="block text-right text-neutral-600 font-medium mb-2">
                     שם משפחה
                   </label>
                   <input
@@ -324,6 +324,7 @@ ${formData.financingNeeded ? 'מעוניין במימון' : ''}
                 <div className="text-right">
                   <h4 className="font-bold text-darkBlue mb-1">טלפון</h4>
                   <p className="text-gray-700">📱 אסי: 050-7422522</p>
+                  <p className="text-gray-700">📱 אלון: 053-5335540</p>
                   <p className="text-gray-700">📱 אלון: 053-5335540</p>
                 </div>
               </div>

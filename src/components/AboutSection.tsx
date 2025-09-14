@@ -7,22 +7,22 @@ const AboutSection = () => {
 
   const stats = [
     {
-      icon: <Users className="w-8 h-8 text-slc-bronze" />,
+      icon: <Users className="w-8 h-8 text-white" />,
       number: "10,000+",
       label: "לקוחות מרוצים"
     },
     {
-      icon: <Award className="w-8 h-8 text-slc-bronze" />,
+      icon: <Award className="w-8 h-8 text-white" />,
       number: "20+",
       label: "שנות ניסיון"
     },
     {
-      icon: <Clock className="w-8 h-8 text-slc-bronze" />,
+      icon: <Clock className="w-8 h-8 text-white" />,
       number: loading ? "טוען..." : cheapestPrice ? `₪${cheapestPrice.toLocaleString()}` : "₪5,000",
       label: "הרכב הזול ביותר במלאי"
     },
     {
-      icon: <ThumbsUp className="w-8 h-8 text-slc-bronze" />,
+      icon: <ThumbsUp className="w-8 h-8 text-white" />,
       number: "100%",
       label: "שירות אישי"
     }
@@ -34,9 +34,9 @@ const AboutSection = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           {/* Text Content - Right Side */}
           <div className="text-right">
-            <h2 className="text-4xl font-bold text-slc-dark mb-6">למה לבחור במיטב הרכב?</h2>
+            <h2 className="text-4xl font-bold text-neutral-900 mb-6">למה לבחור במיטב הרכב?</h2>
             
-            <div className="space-y-4 text-slc-gray text-lg leading-relaxed">
+            <div className="space-y-4 text-neutral-600 text-lg leading-relaxed">
               <p>
                 מיטב הרכב היא סוכנות פרטית בחדרה שמאמינה שכל אחד צריך למצוא את הרכב שמתאים לו – גם לתקציב וגם לאורח החיים.
                 עם ניסיון של שנים, שירות אישי, והתחייבות לאמינות – אנחנו כאן בשבילכם, עם רכב לכל כיס ומימון מותאם אישית.

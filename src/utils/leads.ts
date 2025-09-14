@@ -66,7 +66,7 @@ const sendWhatsAppWelcomeMessage = async (lead: Lead): Promise<void> => {
 בינתיים, תוכל לצפות במלאי הרכבים שלנו באתר:
 https://strongluxurycars.com
 
-לשאלות דחופות: 050-1234567
+לשאלות דחופות: אסי 050-7422522 | אלון 053-5335540
 
 בברכה,
 צוות מיטב הרכב`;
@@ -96,7 +96,7 @@ const sendWebsiteWelcomeMessage = async (lead: Lead): Promise<void> => {
 ${lead.whatsapp ? `WhatsApp: ${lead.whatsapp}` : ''}
 ${lead.budget ? `תקציב: ${new Intl.NumberFormat('he-IL', { style: 'currency', currency: 'ILS' }).format(lead.budget)}` : ''}
 
-לשאלות דחופות: 050-1234567
+לשאלות דחופות: אסי 050-7422522 | אלון 053-5335540
 
 בברכה,
 צוות מיטב הרכב`;
@@ -116,7 +116,7 @@ ${lead.budget ? `תקציב: ${new Intl.NumberFormat('he-IL', { style: 'currency
 
 // Send phone welcome message (SMS)
 const sendPhoneWelcomeMessage = async (lead: Lead): Promise<void> => {
-  const message = `שלום ${lead.firstName}! תודה על פנייתך ל-מיטב הרכב. נציגנו יצור איתך קשר בהקדם. לשאלות: 050-1234567`;
+  const message = `שלום ${lead.firstName}! תודה על פנייתך ל-מיטב הרכב. נציגנו יצור איתך קשר בהקדם. לשאלות: אסי 050-7422522 | אלון 053-5335540`;
 
   // TODO: Implement SMS sending
   console.log('Sending SMS:', message);
@@ -143,7 +143,7 @@ const sendEmailWelcomeMessage = async (lead: Lead): Promise<void> => {
 טלפון: ${lead.phone}
 ${lead.whatsapp ? `WhatsApp: ${lead.whatsapp}` : ''}
 
-לשאלות דחופות: 050-1234567
+לשאלות דחופות: אסי 050-7422522 | אלון 053-5335540
 
 בברכה,
 צוות מיטב הרכב`;
@@ -163,7 +163,7 @@ ${lead.whatsapp ? `WhatsApp: ${lead.whatsapp}` : ''}
 
 // Send generic welcome message
 const sendGenericWelcomeMessage = async (lead: Lead): Promise<void> => {
-  const message = `שלום ${lead.firstName}! תודה על פנייתך ל-מיטב הרכב. נציגנו יצור איתך קשר בהקדם. לשאלות: 050-1234567`;
+  const message = `שלום ${lead.firstName}! תודה על פנייתך ל-מיטב הרכב. נציגנו יצור איתך קשר בהקדם. לשאלות: אסי 050-7422522 | אלון 053-5335540`;
 
   // Try WhatsApp first, then phone
   if (lead.whatsapp || lead.phone) {
@@ -324,7 +324,7 @@ const sendContactedNotification = async (lead: Lead): Promise<void> => {
 
 האם יש לך שאלות נוספות או תרצה לקבוע פגישה לצפייה ברכבים?
 
-לשאלות: 050-1234567
+לשאלות: אסי 050-7422522 | אלון 053-5335540
 
 בברכה,
 צוות מיטב הרכב`;
@@ -450,7 +450,7 @@ export const sendFollowUpReminder = async (lead: Lead): Promise<void> => {
 
 האם יש שאלות נוספות או תרצה לקבוע פגישה?
 
-לשאלות: 050-1234567
+לשאלות: אסי 050-7422522 | אלון 053-5335540
 
 בברכה,
 צוות מיטב הרכב`;

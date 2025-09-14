@@ -7,22 +7,22 @@ const HeroSection = () => {
   
   const services = [
     {
-      icon: <Car className="w-8 h-8 text-slc-bronze" />,
+      icon: <Car className="w-8 h-8 text-white" />,
       title: "רכבים לכל כיס",
       description: loading ? "טוען מחירים..." : cheapestPrice ? `החל מ-₪${cheapestPrice.toLocaleString()} ועד רכבים חדשים ומפוארים` : "החל מ-5,000 ₪ ועד רכבים חדשים ומפוארים"
     },
     {
-      icon: <Shield className="w-8 h-8 text-slc-bronze" />,
+      icon: <Shield className="w-8 h-8 text-white" />,
       title: "סוכנות משפחתית",
       description: "אמינה וחמה בחדרה עם שירות אישי"
     },
     {
-      icon: <DollarSign className="w-8 h-8 text-slc-bronze" />,
+      icon: <DollarSign className="w-8 h-8 text-white" />,
       title: "מימון מותאם",
       description: "עבודה מול כל חברות המימון הגדולות"
     },
     {
-      icon: <Users className="w-8 h-8 text-slc-bronze" />,
+      icon: <Users className="w-8 h-8 text-white" />,
       title: "ליווי מלא",
       description: "עד שתצאו לדרך עם הרכב המתאים לכם"
     }
@@ -73,7 +73,7 @@ const HeroSection = () => {
                 <div className="flex gap-8 justify-end text-neutral-700">
                   <div className="hover-scale bg-white/80 backdrop-blur-sm p-4 rounded-xl shadow-lg border border-neutral-200">
                     <span className="font-bold text-primary-600">אסי:</span> 
-                    <span className="font-mono text-lg text-neutral-800">050-7422522</span>
+                    <span className="font-mono text-lg text-neutral-800">050-7422522 / 053-5335540</span>
                   </div>
                   <div className="hover-scale bg-white/80 backdrop-blur-sm p-4 rounded-xl shadow-lg border border-neutral-200">
                     <span className="font-bold text-primary-600">אלון:</span> 

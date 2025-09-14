@@ -145,7 +145,7 @@ const CarsSection = () => {
 
   if (loading && cars.length === 0) {
     return (
-      <section id="cars" className="section bg-slc-light-gray">
+      <section id="cars" className="section bg-neutral-100">
         <div className="container mx-auto px-8">
           <div className="text-center py-12">
             <div className="animate-spin w-8 h-8 border-2 border-slc-bronze border-t-transparent rounded-full mx-auto mb-4" />
@@ -157,7 +157,7 @@ const CarsSection = () => {
   }
 
   return (
-    <section id="cars" className="section bg-slc-light-gray">
+    <section id="cars" className="section bg-neutral-100">
       <div className="container mx-auto px-8">
         <div className="text-center mb-12">
           <h2 className="heading-2 text-slc-dark mb-4">רכב שמתאים בדיוק לכם</h2>
@@ -285,7 +285,7 @@ const CarsSection = () => {
                     search('');
                     clearFilters();
                   }}
-                  className="text-slc-error hover:text-slc-error"
+                  className="text-red-600 hover:text-red-600"
                 >
                   נקה חיפוש
                 </Button>
@@ -296,8 +296,8 @@ const CarsSection = () => {
 
         {/* Error Display */}
         {error && (
-          <div className="mb-6 p-4 bg-slc-error/10 border border-slc-error/20 rounded-lg">
-            <p className="text-slc-error text-center hebrew">{error}</p>
+          <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+            <p className="text-red-600 text-center hebrew">{error}</p>
           </div>
         )}
 
@@ -413,8 +413,8 @@ const CarsSection = () => {
 
         {/* Car Comparison Modal */}
         {showComparison && (
-          <div className="fixed inset-0 bg-slc-black/50 z-50 flex items-center justify-center p-4">
-            <div className="w-full max-w-6xl max-h-[90vh] overflow-hidden bg-slc-white rounded-xl">
+          <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+            <div className="w-full max-w-6xl max-h-[90vh] overflow-hidden bg-white rounded-xl">
               <div className="p-6 border-b border-slc-light-gray">
                 <div className="flex items-center justify-between">
                   <h3 className="heading-2 text-slc-dark hebrew">השוואת רכבים</h3>
@@ -441,8 +441,8 @@ const CarsSection = () => {
 
         {/* Finance Calculator Modal */}
         {showFinanceCalculator && selectedCarForFinance && (
-          <div className="fixed inset-0 bg-slc-black/50 z-50 flex items-center justify-center p-4">
-            <div className="w-full max-w-4xl max-h-[90vh] overflow-hidden bg-slc-white rounded-xl">
+          <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+            <div className="w-full max-w-4xl max-h-[90vh] overflow-hidden bg-white rounded-xl">
               <div className="p-6 border-b border-slc-light-gray">
                 <div className="flex items-center justify-between">
                   <div>

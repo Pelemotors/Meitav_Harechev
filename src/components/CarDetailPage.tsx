@@ -98,29 +98,18 @@ const CarDetailPage: React.FC = () => {
     }).format(price);
   };
 
-  const handleWhatsApp = () => {
+  const handleWhatsApp = (agent: 'alon' | 'asi') => {
     if (!car) return;
-    
-    // הצגת חלון בחירה בין אלון ואסי
-    const selectedAgent = prompt(
-      'למי תרצה לשלוח הודעה?\n' +
-      '1 - אלון (050-7422522)\n' +
-      '2 - אסי (050-5666620)\n\n' +
-      'הקלד 1 או 2:'
-    );
     
     let phoneNumber = '';
     let agentName = '';
     
-    if (selectedAgent === '1') {
-      phoneNumber = '972507422522';
+    if (agent === 'alon') {
+      phoneNumber = '972535335540';
       agentName = 'אלון';
-    } else if (selectedAgent === '2') {
-      phoneNumber = '972505666620';
+    } else if (agent === 'asi') {
+      phoneNumber = '972507422522';
       agentName = 'אסי';
-    } else {
-      alert('אנא בחר נציג תקין (1 או 2)');
-      return;
     }
     
     const message = `שלום ${agentName}, ראיתי את הרכב ${car.name} באתר שלכם ורציתי לדעת האם הוא עדיין זמין למכירה?`;
@@ -129,9 +118,6 @@ const CarDetailPage: React.FC = () => {
     window.open(whatsappUrl, '_blank');
   };
 
-  const handlePhoneCall = () => {
-    window.open('tel:+972501234567', '_self');
-  };
 
   const handleDownloadPDF = () => {
     if (!car) return;
@@ -175,10 +161,10 @@ const CarDetailPage: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-slc-light-gray flex items-center justify-center">
+      <div className="min-h-screen bg-neutral-100 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin w-12 h-12 border-4 border-slc-bronze border-t-transparent rounded-full mx-auto mb-4" />
-          <p className="text-slc-gray hebrew">טוען פרטי רכב...</p>
+          <div className="animate-spin w-12 h-12 border-4 border-primary-500 border-t-transparent rounded-full mx-auto mb-4" />
+          <p className="text-neutral-600 hebrew">טוען פרטי רכב...</p>
         </div>
       </div>
     );
@@ -186,10 +172,10 @@ const CarDetailPage: React.FC = () => {
 
   if (error || !car) {
     return (
-      <div className="min-h-screen bg-slc-light-gray flex items-center justify-center">
+      <div className="min-h-screen bg-neutral-100 flex items-center justify-center">
         <div className="text-center">
-          <h2 className="text-2xl font-bold text-slc-dark mb-4 hebrew">רכב לא נמצא</h2>
-          <p className="text-slc-gray mb-6 hebrew">{error || 'הרכב המבוקש לא נמצא במערכת'}</p>
+          <h2 className="text-2xl font-bold text-neutral-900 mb-4 hebrew">רכב לא נמצא</h2>
+          <p className="text-neutral-600 mb-6 hebrew">{error || 'הרכב המבוקש לא נמצא במערכת'}</p>
           <Button variant="primary" onClick={() => navigate('/')}>
             חזרה לדף הבית
           </Button>
@@ -199,9 +185,9 @@ const CarDetailPage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-slc-light-gray">
+    <div className="min-h-screen bg-neutral-100">
       {/* Header */}
-      <div className="bg-slc-white border-b border-slc-light-gray sticky top-0 z-40">
+      <div className="bg-white border-b border-neutral-200 sticky top-0 z-40">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <Button
@@ -240,14 +226,14 @@ const CarDetailPage: React.FC = () => {
 
       <div className="container mx-auto px-4 py-8">
         {/* Car Header */}
-        <div className="bg-slc-white rounded-xl p-6 mb-8 shadow-lg">
+        <div className="bg-white rounded-xl p-6 mb-8 shadow-lg">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* Car Info */}
             <div>
               <div className="flex items-start justify-between mb-4">
                 <div>
-                  <h1 className="heading-2 text-slc-dark mb-2 hebrew">{car.name}</h1>
-                  <p className="text-slc-gray hebrew">{car.brand} {car.model}</p>
+                  <h1 className="heading-2 text-neutral-900 mb-2 hebrew">{car.name}</h1>
+                  <p className="text-neutral-600 hebrew">{car.brand} {car.model}</p>
                 </div>
                 {car.isActive && (
                   <Badge variant="success">זמין</Badge>
@@ -256,22 +242,22 @@ const CarDetailPage: React.FC = () => {
               
               <div className="space-y-3 mb-6">
                 <div className="flex items-center justify-between">
-                  <span className="text-slc-gray hebrew">מחיר:</span>
+                  <span className="text-neutral-600 hebrew">מחיר:</span>
                   <span className="price-text">{formatPrice(car.price)}</span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-slc-gray hebrew">שנה:</span>
-                  <span className="text-slc-dark hebrew">{car.year}</span>
+                  <span className="text-neutral-600 hebrew">שנה:</span>
+                  <span className="text-neutral-900 hebrew">{car.year}</span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-slc-gray hebrew">קילומטראז':</span>
-                  <span className="text-slc-dark hebrew">
+                  <span className="text-neutral-600 hebrew">קילומטראז':</span>
+                  <span className="text-neutral-900 hebrew">
                     {car.kilometers?.toLocaleString('he-IL') || 0} ק"מ
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-slc-gray hebrew">תיבת הילוכים:</span>
-                  <span className="text-slc-dark hebrew">
+                  <span className="text-neutral-600 hebrew">תיבת הילוכים:</span>
+                  <span className="text-neutral-900 hebrew">
                     {car.transmission === 'automatic' ? 'אוטומטי' : 'ידני'}
                   </span>
                 </div>
@@ -280,24 +266,50 @@ const CarDetailPage: React.FC = () => {
 
             {/* CTA Buttons */}
             <div className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <Button
-                  variant="primary"
-                  onClick={handleWhatsApp}
-                  className="flex items-center gap-2"
-                >
-                  <MessageCircle className="w-4 h-4" />
-                  WhatsApp
-                </Button>
+              <div className="space-y-3">
+                <div className="text-center">
+                  <p className="text-sm text-gray-600 mb-3">בחר נציג ליצירת קשר:</p>
+                </div>
                 
-                <Button
-                  variant="outline"
-                  onClick={handlePhoneCall}
-                  className="flex items-center gap-2"
-                >
-                  <Phone className="w-4 h-4" />
-                  התקשר
-                </Button>
+                <div className="grid grid-cols-1 gap-3">
+                  <Button
+                    variant="primary"
+                    onClick={() => handleWhatsApp('alon')}
+                    className="flex items-center justify-center gap-2 w-full"
+                  >
+                    <MessageCircle className="w-4 h-4" />
+                    WhatsApp - אלון (053-5335540)
+                  </Button>
+                  
+                  <Button
+                    variant="primary"
+                    onClick={() => handleWhatsApp('asi')}
+                    className="flex items-center justify-center gap-2 w-full"
+                  >
+                    <MessageCircle className="w-4 h-4" />
+                    WhatsApp - אסי (050-7422522)
+                  </Button>
+                </div>
+                
+                <div className="grid grid-cols-2 gap-3 mt-4">
+                  <Button
+                    variant="outline"
+                    onClick={() => window.open('tel:0535335540', '_self')}
+                    className="flex items-center gap-2"
+                  >
+                    <Phone className="w-4 h-4" />
+                    התקשר - אלון
+                  </Button>
+                  
+                  <Button
+                    variant="outline"
+                    onClick={() => window.open('tel:0507422522', '_self')}
+                    className="flex items-center gap-2"
+                  >
+                    <Phone className="w-4 h-4" />
+                    התקשר - אסי
+                  </Button>
+                </div>
               </div>
               
               <Button
@@ -313,8 +325,8 @@ const CarDetailPage: React.FC = () => {
         </div>
 
         {/* Tabs */}
-        <div className="bg-slc-white rounded-xl shadow-lg overflow-hidden">
-          <div className="border-b border-slc-light-gray">
+        <div className="bg-white rounded-xl shadow-lg overflow-hidden">
+          <div className="border-b border-neutral-200">
             <div className="flex overflow-x-auto">
               {[
                 { id: 'gallery', label: 'גלריה', icon: '🖼️' },
@@ -328,8 +340,8 @@ const CarDetailPage: React.FC = () => {
                   className={`
                     flex items-center gap-2 px-6 py-4 whitespace-nowrap transition-colors
                     ${activeTab === tab.id 
-                      ? 'text-slc-bronze border-b-2 border-slc-bronze bg-slc-bronze/5' 
-                      : 'text-slc-gray hover:text-slc-dark hover:bg-slc-light-gray'
+                      ? 'text-primary-600 border-b-2 border-primary-500 bg-primary-50' 
+                      : 'text-neutral-600 hover:text-neutral-900 hover:bg-neutral-100'
                     }
                   `}
                 >
@@ -356,11 +368,11 @@ const CarDetailPage: React.FC = () => {
             
             {activeTab === 'description' && (
               <div>
-                <h3 className="heading-3 text-slc-dark mb-4 hebrew">תיאור הרכב</h3>
+                <h3 className="heading-3 text-neutral-900 mb-4 hebrew">תיאור הרכב</h3>
                 {car.description ? (
                   <MarkdownRenderer content={car.description} />
                 ) : (
-                  <p className="text-slc-gray hebrew">אין תיאור זמין לרכב זה</p>
+                  <p className="text-neutral-600 hebrew">אין תיאור זמין לרכב זה</p>
                 )}
               </div>
             )}
