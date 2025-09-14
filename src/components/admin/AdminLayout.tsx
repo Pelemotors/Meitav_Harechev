@@ -38,11 +38,11 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({
   return (
     <div className="min-h-screen bg-gray-50 flex" dir="rtl">
       {/* Sidebar */}
-      <div className={`fixed inset-y-0 right-0 z-50 w-64 bg-darkBlue transform ${
+      <div className={`fixed inset-y-0 right-0 z-50 w-64 bg-slate-800 transform ${
         sidebarOpen ? 'translate-x-0' : 'translate-x-full'
       } transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0`}>
         
-        <div className="flex items-center justify-between h-16 px-6 bg-darkBlue border-b border-blue-700">
+        <div className="flex items-center justify-between h-16 px-6 bg-slate-800 border-b border-slate-700">
           <div className="flex items-center gap-2">
             <Car className="w-8 h-8 text-primary" />
             <span className="text-xl font-bold text-white">מיטב הרכב</span>
@@ -69,8 +69,8 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({
                   onPageChange(item.id);
                   setSidebarOpen(false);
                 }}
-                className={`w-full flex items-center gap-3 px-6 py-3 text-right hover:bg-blue-700 transition-colors ${
-                  currentPage === item.id ? 'bg-blue-700 border-l-4 border-primary' : ''
+                className={`w-full flex items-center gap-3 px-6 py-3 text-right hover:bg-slate-700 transition-colors ${
+                  currentPage === item.id ? 'bg-slate-700 border-l-4 border-blue-500' : ''
                 }`}
               >
                 <Icon className="w-5 h-5 text-white" />
@@ -80,7 +80,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({
           })}
         </nav>
 
-        <div className="absolute bottom-0 left-0 right-0 p-6 border-t border-blue-700">
+        <div className="absolute bottom-0 left-0 right-0 p-6 border-t border-slate-700">
           <div className="text-white text-sm mb-4">
             <p className="font-medium">{user?.username}</p>
             <p className="text-blue-300">{user?.email}</p>

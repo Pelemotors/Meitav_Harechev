@@ -66,7 +66,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ cars, onAddNewCar }) =>
   return (
     <div className="space-y-6">
       {/* Welcome Header */}
-      <div className="bg-gradient-to-r from-darkBlue to-blue-700 rounded-lg p-6 text-white">
+      <div className="bg-gradient-to-r from-slate-800 to-slate-700 rounded-lg p-6 text-white">
         <h1 className="text-3xl font-bold mb-2">ברוכים הבאים למערכת הניהול</h1>
         <p className="text-blue-100">סקירה כללית של מלאי הרכבים ופעילות המערכת</p>
       </div>

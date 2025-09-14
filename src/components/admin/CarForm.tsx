@@ -173,7 +173,7 @@ const CarForm: React.FC<CarFormProps> = ({ car, onSave, onCancel, onMediaChange 
 
   return (
     <div className="bg-white rounded-lg shadow-lg p-6">
-      <h2 className="text-2xl font-bold text-darkBlue mb-6 text-right">
+      <h2 className="text-2xl font-bold text-slate-800 mb-6 text-right">
         {car ? 'עריכת רכב' : 'הוספת רכב חדש'}
       </h2>
 
@@ -213,7 +213,7 @@ const CarForm: React.FC<CarFormProps> = ({ car, onSave, onCancel, onMediaChange 
               required
               min="1990"
               max={new Date().getFullYear() + 1}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-right"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-right"
             />
           </div>
 
@@ -229,7 +229,7 @@ const CarForm: React.FC<CarFormProps> = ({ car, onSave, onCancel, onMediaChange 
               required
               min="0"
               step="100"
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-right"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-right"
             />
           </div>
 
@@ -244,7 +244,7 @@ const CarForm: React.FC<CarFormProps> = ({ car, onSave, onCancel, onMediaChange 
               onChange={handleInputChange}
               required
               min="0"
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-right"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-right"
               placeholder="45000"
             />
           </div>
@@ -257,7 +257,7 @@ const CarForm: React.FC<CarFormProps> = ({ car, onSave, onCancel, onMediaChange 
               name="transmission"
               value={formData.transmission}
               onChange={handleInputChange}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-right"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-right"
             >
               <option value="automatic">אוטומטי</option>
               <option value="manual">ידני</option>
@@ -272,7 +272,7 @@ const CarForm: React.FC<CarFormProps> = ({ car, onSave, onCancel, onMediaChange 
               name="fuelType"
               value={formData.fuelType}
               onChange={handleInputChange}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-right"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-right"
             >
               <option value="gasoline">בנזין</option>
               <option value="diesel">דיזל</option>
@@ -291,7 +291,7 @@ const CarForm: React.FC<CarFormProps> = ({ car, onSave, onCancel, onMediaChange 
               value={formData.color}
               onChange={handleInputChange}
               required
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-right"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-right"
               placeholder="לבן, שחור, כחול..."
             />
           </div>
@@ -319,7 +319,7 @@ const CarForm: React.FC<CarFormProps> = ({ car, onSave, onCancel, onMediaChange 
             value={formData.description}
             onChange={handleInputChange}
             rows={4}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-right resize-none"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-right resize-none"
             placeholder="תיאור מפורט של הרכב, מצבו, ותכונות מיוחדות..."
           />
         </div>
@@ -333,7 +333,7 @@ const CarForm: React.FC<CarFormProps> = ({ car, onSave, onCancel, onMediaChange 
             <button
               type="button"
               onClick={handleAddFeature}
-              className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
             >
               הוסף
             </button>
@@ -342,7 +342,7 @@ const CarForm: React.FC<CarFormProps> = ({ car, onSave, onCancel, onMediaChange 
               value={newFeature}
               onChange={(e) => setNewFeature(e.target.value)}
               onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddFeature())}
-              className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-right"
+              className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-right"
               placeholder="הוסף תכונה חדשה..."
             />
           </div>
@@ -393,10 +393,10 @@ const CarForm: React.FC<CarFormProps> = ({ car, onSave, onCancel, onMediaChange 
                 type="button"
                 onClick={() => fileInputRef.current?.click()}
                 disabled={isUploading}
-                className="h-32 border-2 border-dashed border-gray-300 rounded-lg flex flex-col items-center justify-center hover:border-primary transition-colors disabled:opacity-50"
+                className="h-32 border-2 border-dashed border-gray-300 rounded-lg flex flex-col items-center justify-center hover:border-blue-500 transition-colors disabled:opacity-50"
               >
                 {isUploading ? (
-                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
+                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-500"></div>
                 ) : (
                   <>
                     <ImageIcon className="w-6 h-6 text-gray-400 mb-2" />
@@ -441,7 +441,7 @@ const CarForm: React.FC<CarFormProps> = ({ car, onSave, onCancel, onMediaChange 
             <button
               type="button"
               onClick={() => videoInputRef.current?.click()}
-              className="w-full max-w-md h-32 border-2 border-dashed border-gray-300 rounded-lg flex flex-col items-center justify-center hover:border-primary transition-colors"
+              className="w-full max-w-md h-32 border-2 border-dashed border-gray-300 rounded-lg flex flex-col items-center justify-center hover:border-blue-500 transition-colors"
             >
               <Play className="w-6 h-6 text-gray-400 mb-2" />
               <span className="text-sm text-gray-500">הוסף סרטון</span>
@@ -468,7 +468,7 @@ const CarForm: React.FC<CarFormProps> = ({ car, onSave, onCancel, onMediaChange 
           </button>
           <button
             type="submit"
-            className="px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
+            className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
           >
             {car ? 'עדכן רכב' : 'הוסף רכב'}
           </button>

@@ -111,3 +111,31 @@ export const useCheapestCar = () => {
 
   return { cheapestCar, loading };
 };
+
+// Hook משולב לקבלת מחיר ופרטי הרכב הזול ביותר
+export const useCheapestCarInfo = () => {
+  const [cheapestCar, setCheapestCar] = useState<Car | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchCheapestCar = async () => {
+      setLoading(true);
+      const car = await getCheapestCar();
+      setCheapestCar(car);
+      setLoading(false);
+    };
+
+    fetchCheapestCar();
+    
+    // רענון כל 5 דקות
+    const interval = setInterval(fetchCheapestCar, 5 * 60 * 1000);
+    
+    return () => clearInterval(interval);
+  }, []);
+
+  return { 
+    cheapestCar, 
+    cheapestPrice: cheapestCar?.price || null,
+    loading 
+  };
+};

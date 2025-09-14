@@ -1,9 +1,11 @@
 import React from 'react';
-import { Users, Award, Clock, ThumbsUp } from 'lucide-react';
-import { useCheapestCarPrice } from '../utils/carPricing';
+import { Users, Award, Clock, ThumbsUp, Car, ExternalLink } from 'lucide-react';
+import { useCheapestCarInfo } from '../utils/carPricing';
+import { useNavigate } from 'react-router-dom';
 
 const AboutSection = () => {
-  const { cheapestPrice, loading } = useCheapestCarPrice();
+  const { cheapestCar, cheapestPrice, loading } = useCheapestCarInfo();
+  const navigate = useNavigate();
 
   const stats = [
     {
@@ -17,9 +19,9 @@ const AboutSection = () => {
       label: "שנות ניסיון"
     },
     {
-      icon: <Clock className="w-8 h-8 text-white" />,
+      icon: <Car className="w-8 h-8 text-white" />,
       number: loading ? "טוען..." : cheapestPrice ? `₪${cheapestPrice.toLocaleString()}` : "₪5,000",
-      label: "הרכב הזול ביותר במלאי"
+      label: cheapestCar ? `${cheapestCar.name}` : "הרכב הזול ביותר במלאי"
     },
     {
       icon: <ThumbsUp className="w-8 h-8 text-white" />,
@@ -62,21 +64,51 @@ const AboutSection = () => {
           
           {/* Statistics - Left Side */}
           <div className="grid grid-cols-2 gap-6">
-            {stats.map((stat, index) => (
-              <div key={index} className={`modern-card text-center p-8 hover-lift animate-fade-in-up`} style={{ animationDelay: `${index * 0.2}s` }}>
-                <div className="flex justify-center mb-6 animate-float" style={{ animationDelay: `${index * 0.5}s` }}>
-                  <div className="w-16 h-16 bg-gradient-to-br from-primary-500 to-secondary-500 rounded-2xl flex items-center justify-center text-white shadow-xl">
-                    {stat.icon}
+            {stats.map((stat, index) => {
+              // אם זה הכרטיס של הרכב הזול ביותר ויש רכב זמין, נוסיף קישור
+              const isCheapestCarCard = index === 2 && cheapestCar;
+              
+              const cardContent = (
+                <div className={`modern-card text-center p-8 hover-lift animate-fade-in-up ${isCheapestCarCard ? 'cursor-pointer group' : ''}`} style={{ animationDelay: `${index * 0.2}s` }}>
+                  <div className="flex justify-center mb-6 animate-float" style={{ animationDelay: `${index * 0.5}s` }}>
+                    <div className="w-16 h-16 bg-gradient-to-br from-primary-500 to-secondary-500 rounded-2xl flex items-center justify-center text-white shadow-xl">
+                      {stat.icon}
+                    </div>
                   </div>
+                  <div className="text-4xl font-bold bg-gradient-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent mb-3 animate-pulse-slow">
+                    {stat.number}
+                  </div>
+                  <div className="text-neutral-600 font-semibold text-lg">
+                    {stat.label}
+                  </div>
+                  {isCheapestCarCard && (
+                    <>
+                      <div className="mt-3 px-3 py-1 bg-gradient-to-r from-primary-500 to-secondary-500 text-white text-xs font-bold rounded-full">
+                        הרכב הזול ביותר במלאי!
+                      </div>
+                      <div className="mt-4 flex items-center justify-center gap-2 text-primary-600 text-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        <span>לחץ לצפייה</span>
+                        <ExternalLink className="w-4 h-4" />
+                      </div>
+                    </>
+                  )}
                 </div>
-                <div className="text-4xl font-bold bg-gradient-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent mb-3 animate-pulse-slow">
-                  {stat.number}
-                </div>
-                <div className="text-neutral-600 font-semibold text-lg">
-                  {stat.label}
-                </div>
-              </div>
-            ))}
+              );
+
+              if (isCheapestCarCard) {
+                return (
+                  <div 
+                    key={index}
+                    onClick={() => navigate(`/car/${cheapestCar.id}`)}
+                    className="cursor-pointer"
+                  >
+                    {cardContent}
+                  </div>
+                );
+              }
+
+              return <div key={index}>{cardContent}</div>;
+            })}
           </div>
         </div>
       </div>
