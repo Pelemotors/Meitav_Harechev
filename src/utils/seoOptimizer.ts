@@ -54,11 +54,11 @@ class SEOOptimizer {
   private baseUrl: string;
   private defaultMeta: SEOMetaData;
 
-  constructor(baseUrl: string = 'https://strongluxurycars.com') {
+  constructor(baseUrl: string = 'https://meitav-harechev.com') {
     this.baseUrl = baseUrl;
     this.defaultMeta = {
-      title: 'Strong Luxury Cars - רכבי יוקרה למכירה',
-      description: 'רכבי יוקרה איכותיים ובדוקים במחירים תחרותיים. BMW, Mercedes, Audi ועוד מותגי יוקרה מובילים.',
+      title: 'מיטב הרכב - סוכנות הרכב של חדרה',
+      description: 'רכבים לכל כיס החל מ-5,000 ₪ ועד רכבים חדשים ומפוארים. סוכנות משפחתית בחדרה עם שירות אישי.',
       keywords: ['רכבי יוקרה', 'BMW', 'Mercedes', 'Audi', 'רכב משומש', 'רכב חדש', 'מימון רכב'],
       ogType: 'website',
       twitterCard: 'summary_large_image',
@@ -151,7 +151,7 @@ class SEOOptimizer {
         availability: 'https://schema.org/InStock',
         seller: {
           '@type': 'Organization',
-          name: 'Strong Luxury Cars',
+          name: 'מיטב הרכב',
           url: this.baseUrl
         }
       },
@@ -266,7 +266,7 @@ Crawl-delay: 1`;
     }).format(car.price);
 
     return {
-      title: `${car.name} ${car.year} - ${price} | Strong Luxury Cars`,
+      title: `${car.name} ${car.year} - ${price} | מיטב הרכב`,
       description: `${car.name} ${car.year} למכירה. ${car.mileage.toLocaleString('he-IL')} ק"מ, ${car.transmission === 'automatic' ? 'אוטומטי' : 'ידני'}, ${car.fuelType}. מחיר: ${price}. רכב ${car.condition === 'new' ? 'חדש' : 'משומש'} במצב מעולה.`,
       keywords: [
         car.name,
@@ -277,7 +277,7 @@ Crawl-delay: 1`;
         car.condition === 'new' ? 'רכב חדש' : 'רכב משומש',
         car.transmission === 'automatic' ? 'אוטומטי' : 'ידני',
         car.fuelType,
-        'Strong Luxury Cars'
+        'מיטב הרכב'
       ],
       ogTitle: `${car.name} ${car.year} - ${price}`,
       ogDescription: `${car.name} ${car.year} למכירה במחיר ${price}. רכב ${car.condition === 'new' ? 'חדש' : 'משומש'} במצב מעולה.`,
@@ -302,7 +302,7 @@ Crawl-delay: 1`;
         query,
         'רכבי יוקרה',
         'רכב למכירה',
-        'Strong Luxury Cars'
+        'מיטב הרכב'
       ],
       ogTitle: `חיפוש: ${query} - ${resultsCount} רכבים`,
       ogDescription: `חיפוש רכבים: ${query}. נמצאו ${resultsCount} רכבים מתאימים.`,
@@ -332,7 +332,7 @@ Crawl-delay: 1`;
         ...cars.map(car => car.name),
         'מפרט רכב',
         'מחיר רכב',
-        'Strong Luxury Cars'
+        'מיטב הרכב'
       ],
       ogTitle: `השוואת רכבים: ${carNames}`,
       ogDescription: `השוואה מפורטת בין ${cars.length} רכבים. מחירים: ${prices}.`,
@@ -370,15 +370,15 @@ Crawl-delay: 1`;
     return {
       '@context': 'https://schema.org',
       '@type': 'Organization',
-      name: 'Strong Luxury Cars',
+      name: 'מיטב הרכב',
       url: this.baseUrl,
       logo: `${this.baseUrl}/logo.png`,
-      description: 'רכבי יוקרה איכותיים ובדוקים במחירים תחרותיים',
+      description: 'רכבים לכל כיס החל מ-5,000 ₪ ועד רכבים חדשים ומפוארים',
       address: {
         '@type': 'PostalAddress',
         addressCountry: 'IL',
-        addressLocality: 'תל אביב',
-        addressRegion: 'תל אביב'
+        addressLocality: 'חדרה',
+        addressRegion: 'חדרה'
       },
       contactPoint: {
         '@type': 'ContactPoint',

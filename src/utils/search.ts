@@ -237,7 +237,24 @@ export async function getFilterOptions(): Promise<{
   years: number[];
 }> {
   try {
-    // Try API first
+    // Try to load from our JSON file first
+    const response = await fetch('./data/manufacturers_models.json');
+    if (response.ok) {
+      const data = await response.json();
+      const brands = data.manufacturers.map((m: any) => m.name);
+      const models = Object.values(data.models).flat().map((m: any) => m.name);
+      
+      return {
+        brands,
+        models,
+        fuelTypes: ['בנזין', 'דיזל', 'היברידי', 'חשמלי'],
+        transmissions: ['אוטומטי', 'ידני'],
+        colors: ['לבן', 'שחור', 'כסף', 'אפור', 'כחול', 'אדום', 'ירוק'],
+        years: Array.from({ length: 25 }, (_, i) => new Date().getFullYear() - i)
+      };
+    }
+    
+    // Fallback to API
     const [brandsResponse, modelsResponse] = await Promise.all([
       fetch(`${API_BASE_URL}/vehicles/brands`),
       fetch(`${API_BASE_URL}/vehicles/models`)

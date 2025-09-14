@@ -436,15 +436,15 @@ class StaticPageManager {
     const defaultPages = [
       {
         slug: 'about',
-        title: 'אודות Strong Luxury Cars',
+        title: 'אודות מיטב הרכב',
         content: `
-# אודות Strong Luxury Cars
+# אודות מיטב הרכב
 
-ברוכים הבאים ל-Strong Luxury Cars - בית לרכבי יוקרה איכותיים ובדוקים.
+ברוכים הבאים ל-מיטב הרכב - בית לרכבי יוקרה איכותיים ובדוקים.
 
 ## מי אנחנו
 
-Strong Luxury Cars היא חברה מובילה בתחום רכבי היוקרה בישראל. אנו מתמחים במכירה של רכבי יוקרה חדשים ומשומשים ממותגים מובילים כמו BMW, Mercedes, Audi ועוד.
+מיטב הרכב היא חברה מובילה בתחום רכבי היוקרה בישראל. אנו מתמחים במכירה של רכבי יוקרה חדשים ומשומשים ממותגים מובילים כמו BMW, Mercedes, Audi ועוד.
 
 ## החזון שלנו
 
@@ -482,7 +482,7 @@ Strong Luxury Cars היא חברה מובילה בתחום רכבי היוקרה
 
 ## 1. קבלת התנאים
 
-בגישה לאתר Strong Luxury Cars ובשימוש בשירותים שלנו, אתם מסכימים לתנאי שימוש אלה.
+בגישה לאתר מיטב הרכב ובשימוש בשירותים שלנו, אתם מסכימים לתנאי שימוש אלה.
 
 ## 2. שימוש באתר
 
@@ -492,7 +492,7 @@ Strong Luxury Cars היא חברה מובילה בתחום רכבי היוקרה
 
 ## 3. תוכן האתר
 
-- כל התוכן באתר הוא בבעלות Strong Luxury Cars
+- כל התוכן באתר הוא בבעלות מיטב הרכב
 - אסור להעתיק, להפיץ או לשנות תוכן ללא אישור
 - התמונות והמידע מוגנים בזכויות יוצרים
 
@@ -649,9 +649,9 @@ Strong Luxury Cars היא חברה מובילה בתחום רכבי היוקרה
 
 ## רשתות חברתיות
 
-**פייסבוק:** Strong Luxury Cars  
+**פייסבוק:** מיטב הרכב  
 **אינסטגרם:** @strongluxurycars  
-**לינקדאין:** Strong Luxury Cars
+**לינקדאין:** מיטב הרכב
         `,
         template: 'contact',
         category: 'company',
@@ -775,7 +775,7 @@ Strong Luxury Cars היא חברה מובילה בתחום רכבי היוקרה
         datePublished: page.createdAt.toISOString(),
         publisher: {
           '@type': 'Organization',
-          name: 'Strong Luxury Cars',
+          name: 'מיטב הרכב',
           url: 'https://strongluxurycars.com'
         }
       };

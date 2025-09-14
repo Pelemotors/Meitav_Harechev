@@ -38,7 +38,7 @@ export const generateBackupCodes = (): string[] => {
 };
 
 // יצירת QR code URL
-export const generateQRCodeUrl = (secret: string, username: string, issuer: string = 'Strong Luxury Cars'): string => {
+export const generateQRCodeUrl = (secret: string, username: string, issuer: string = 'מיטב הרכב'): string => {
   const otpauth = `otpauth://totp/${encodeURIComponent(issuer)}:${encodeURIComponent(username)}?secret=${secret}&issuer=${encodeURIComponent(issuer)}&algorithm=SHA1&digits=6&period=30`;
   return `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(otpauth)}`;
 };

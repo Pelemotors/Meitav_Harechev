@@ -206,8 +206,8 @@ class SystemSettingsManager {
           maintenanceMessage: ''
         },
         seo: {
-          defaultTitle: 'Strong Luxury Cars - רכבי יוקרה למכירה',
-          defaultDescription: 'רכבי יוקרה איכותיים ובדוקים במחירים תחרותיים',
+          defaultTitle: 'מיטב הרכב - סוכנות הרכב של חדרה',
+          defaultDescription: 'רכבים לכל כיס החל מ-5,000 ₪ ועד רכבים חדשים ומפוארים',
           defaultKeywords: ['רכבי יוקרה', 'BMW', 'Mercedes', 'Audi'],
           googleAnalyticsId: '',
           googleTagManagerId: '',
@@ -393,7 +393,7 @@ class SystemSettingsManager {
     return [
       {
         key: 'companyName',
-        value: 'Strong Luxury Cars',
+        value: 'מיטב הרכב',
         type: 'string',
         category: 'general',
         description: 'שם החברה',
@@ -420,7 +420,7 @@ class SystemSettingsManager {
       },
       {
         key: 'defaultTitle',
-        value: 'Strong Luxury Cars - רכבי יוקרה למכירה',
+        value: 'מיטב הרכב - סוכנות הרכב של חדרה',
         type: 'string',
         category: 'seo',
         description: 'כותרת ברירת מחדל לאתר',

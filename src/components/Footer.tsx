@@ -9,19 +9,14 @@ const Footer = () => {
           {/* Company Info */}
           <div className="text-right">
             <div className="flex items-center justify-end gap-3 mb-4">
-              <img 
-                src="/SLC LOGO.jpg" 
-                alt="Strong Luxury Cars" 
-                className="w-10 h-10 object-contain"
-              />
               <div className="flex flex-col">
-                <span className="text-xl font-bold text-slc-bronze hebrew"> Strong Luxury Cars </span>
-                <span className="text-xs text-slc-white/80 english">Strong Luxury Cars</span>
+                <span className="text-xl font-bold text-slc-bronze hebrew">מיטב הרכב</span>
+                <span className="text-xs text-slc-white/80 english">Meitav HaRechev</span>
               </div>
             </div>
             <p className="text-slc-white/80 leading-relaxed hebrew">
-              מרכז רכבי יוקרה מקצועי בנתניה. 
-              מומחים ברכבי יוקרה עם 15 שנות ניסיון בתחום.
+              סוכנות רכב משפחתית בחדרה. 
+              רכבים לכל כיס עם מחיר התחלתי של 5,000 ₪ ועד רכבים חדשים ומפוארים.
             </p>
           </div>
           
@@ -54,16 +49,16 @@ const Footer = () => {
             <h4 className="font-bold text-lg mb-4">יצירת קשר</h4>
             <div className="space-y-3 text-slc-white/80">
               <div className="flex items-center justify-end gap-2">
-                <span>רחוב ברוך 123, נתניה</span>
+                <span>חדרה</span>
                 <MapPin className="w-4 h-4" />
               </div>
               <div className="flex items-center justify-end gap-2">
-                <span>09-123-4567</span>
+                <span>אסי: 050-7422522</span>
                 <Phone className="w-4 h-4" />
               </div>
               <div className="flex items-center justify-end gap-2">
-                <span>info@autotest.co.il</span>
-                <Mail className="w-4 h-4" />
+                <span>אלון: 053-5335540</span>
+                <Phone className="w-4 h-4" />
               </div>
             </div>
           </div>
@@ -71,7 +66,7 @@ const Footer = () => {
         
         <div className="border-t border-slc-bronze/20 mt-8 pt-8 text-center">
           <p className="text-slc-white/60 hebrew">
-            © 2024 Strong Luxury Cars - כל הזכויות שמורות
+            © 2024 מיטב הרכב - כל הזכויות שמורות
           </p>
         </div>
       </div>

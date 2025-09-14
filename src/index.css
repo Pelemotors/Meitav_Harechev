@@ -20,6 +20,8 @@
     font-family: 'Heebo', 'Assistant', 'Montserrat', system-ui, -apple-system, sans-serif;
     line-height: 1.6;
     direction: rtl;
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    min-height: 100vh;
   }
   
   /* Hebrew text styling */
@@ -39,26 +41,30 @@
 }
 
 @layer components {
-  /* Button Components */
+  /* Button Components - Modern Design */
   .btn-primary {
-    @apply bg-slc-bronze text-slc-white px-6 py-3 rounded-md font-bold hover:bg-slc-bronze-alt transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-slc-bronze focus:ring-offset-2;
+    @apply bg-gradient-to-r from-primary-500 to-primary-600 text-white px-6 py-3 rounded-xl font-bold hover:from-primary-600 hover:to-primary-700 transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 shadow-lg hover:shadow-xl;
   }
   
   .btn-secondary {
-    @apply bg-transparent text-slc-bronze border-2 border-slc-bronze px-6 py-3 rounded-md font-bold hover:bg-slc-bronze hover:text-slc-white transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-slc-bronze focus:ring-offset-2;
+    @apply bg-gradient-to-r from-secondary-500 to-secondary-600 text-white px-6 py-3 rounded-xl font-bold hover:from-secondary-600 hover:to-secondary-700 transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-secondary-500 focus:ring-offset-2 shadow-lg hover:shadow-xl;
   }
   
   .btn-ghost {
-    @apply bg-transparent text-slc-bronze hover:bg-slc-bronze/10 px-6 py-3 rounded-md font-bold transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-slc-bronze focus:ring-offset-2;
+    @apply bg-transparent text-primary-600 border-2 border-primary-500 px-6 py-3 rounded-xl font-bold hover:bg-primary-500 hover:text-white transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2;
   }
   
-  /* Card Components */
+  .btn-outline {
+    @apply bg-transparent text-neutral-700 border-2 border-neutral-300 px-6 py-3 rounded-xl font-bold hover:bg-neutral-700 hover:text-white transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-neutral-500 focus:ring-offset-2;
+  }
+  
+  /* Card Components - Modern Design */
   .card {
-    @apply bg-slc-white rounded-xl p-6 shadow-lg border border-slc-light-gray hover:shadow-xl transition-all duration-300 hover:scale-[1.02];
+    @apply bg-white rounded-2xl p-6 shadow-lg border border-neutral-200 hover:shadow-xl transition-all duration-300 hover:scale-[1.02];
   }
   
   .card-elevated {
-    @apply bg-slc-white rounded-xl p-6 shadow-xl border border-slc-bronze/30 hover:shadow-2xl transition-all duration-300 hover:scale-[1.02];
+    @apply modern-card p-6 hover:shadow-2xl transition-all duration-300 hover:scale-[1.02];
   }
   
   /* Layout Components */
@@ -89,72 +95,103 @@
   
   /* Service Cards */
   .service-card {
-    @apply min-h-[130px] bg-slc-dark p-6 rounded-xl border border-slc-bronze/20 hover:border-slc-bronze/40 transition-all duration-300;
+    @apply min-h-[130px] bg-neutral-900 p-6 rounded-xl border border-primary-500/20 hover:border-primary-500/40 transition-all duration-300;
   }
   
-  /* Typography */
+  /* Typography - Modern */
   .heading-1 {
-    @apply text-heading-1 font-bold text-slc-dark hebrew;
+    @apply text-heading-1 font-bold text-neutral-900 hebrew;
   }
   
   .heading-2 {
-    @apply text-heading-2 font-semibold text-slc-dark hebrew;
+    @apply text-heading-2 font-semibold text-neutral-900 hebrew;
   }
   
   .heading-3 {
-    @apply text-heading-3 font-medium text-slc-dark hebrew;
+    @apply text-heading-3 font-medium text-neutral-900 hebrew;
   }
   
   .body-text {
-    @apply text-body text-slc-gray hebrew leading-relaxed;
+    @apply text-body text-neutral-600 hebrew leading-relaxed;
   }
   
   .price-text {
-    @apply text-heading-2 font-bold text-slc-bronze numbers;
+    @apply text-heading-2 font-bold bg-gradient-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent numbers;
   }
   
-  /* Form Elements */
+  /* Form Elements - Modern */
   .input-field {
-    @apply w-full px-4 py-3 border border-slc-light-gray rounded-lg focus:ring-2 focus:ring-slc-bronze focus:border-transparent text-right hebrew transition-all duration-300;
+    @apply w-full px-4 py-3 border border-neutral-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent text-right hebrew transition-all duration-300;
   }
   
   .textarea-field {
-    @apply w-full px-4 py-3 border border-slc-light-gray rounded-lg focus:ring-2 focus:ring-slc-bronze focus:border-transparent text-right hebrew resize-none transition-all duration-300;
+    @apply w-full px-4 py-3 border border-neutral-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent text-right hebrew resize-none transition-all duration-300;
   }
   
-  /* Navigation */
+  /* Navigation - Modern */
   .nav-link {
-    @apply hover:text-slc-bronze transition-colors duration-300 hebrew;
+    @apply hover:text-primary-600 transition-colors duration-300 hebrew;
   }
   
   .nav-link-active {
-    @apply text-slc-bronze font-semibold hebrew;
+    @apply text-primary-600 font-semibold hebrew;
   }
   
-  /* Badge Components */
+  /* Badge Components - Modern */
   .badge {
     @apply inline-flex items-center justify-center px-3 py-1 text-sm font-medium rounded-full;
   }
   
   .badge-primary {
-    @apply bg-slc-bronze text-slc-white;
+    @apply bg-primary-500 text-white;
   }
   
   .badge-success {
-    @apply bg-slc-success text-slc-white;
+    @apply bg-accent-500 text-white;
   }
   
   .badge-warning {
-    @apply bg-slc-warning text-slc-black;
+    @apply bg-secondary-500 text-white;
   }
   
   .badge-error {
-    @apply bg-slc-error text-slc-white;
+    @apply bg-red-500 text-white;
   }
   
-  /* Loading States */
+  /* Loading States - Modern */
   .skeleton {
-    @apply animate-pulse bg-slc-light-gray rounded;
+    @apply animate-pulse bg-neutral-200 rounded;
+  }
+  
+  /* Slider Styles */
+  .slider {
+    -webkit-appearance: none;
+    appearance: none;
+    background: #e5e7eb;
+    outline: none;
+    border-radius: 0.5rem;
+  }
+  
+  .slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #3b82f6;
+    cursor: pointer;
+    border: 2px solid #ffffff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .slider::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #3b82f6;
+    cursor: pointer;
+    border: 2px solid #ffffff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   }
   
   .skeleton-text {
@@ -183,4 +220,235 @@
   .text-balance {
     text-wrap: balance;
   }
+}
+
+/* Modern Design Components */
+.hero-gradient {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-gradient::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
+    radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.3) 0%, transparent 50%);
+  animation: gradientShift 15s ease infinite;
+}
+
+.modern-card {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  border-radius: 20px;
+  transition: all 0.3s ease;
+}
+
+.modern-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  background: rgba(255, 255, 255, 1);
+}
+
+.glass-effect {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 16px;
+}
+
+.neon-glow {
+  box-shadow: 
+    0 0 20px rgba(59, 130, 246, 0.5),
+    0 0 40px rgba(59, 130, 246, 0.3),
+    0 0 60px rgba(59, 130, 246, 0.1);
+  animation: neonPulse 2s ease-in-out infinite alternate;
+}
+
+@keyframes neonPulse {
+  from {
+    box-shadow: 
+      0 0 20px rgba(59, 130, 246, 0.5),
+      0 0 40px rgba(59, 130, 246, 0.3),
+      0 0 60px rgba(59, 130, 246, 0.1);
+  }
+  to {
+    box-shadow: 
+      0 0 30px rgba(59, 130, 246, 0.8),
+      0 0 60px rgba(59, 130, 246, 0.5),
+      0 0 90px rgba(59, 130, 246, 0.2);
+  }
+}
+
+/* Advanced Animations and Effects */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes slideInRight {
+  from { transform: translateX(100px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes slideInLeft {
+  from { transform: translateX(-100px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes fadeInUp {
+  from { transform: translateY(30px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200px 0; }
+  100% { background-position: calc(200px + 100%) 0; }
+}
+
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Animation Classes */
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.animate-slide-in-right {
+  animation: slideInRight 0.8s ease-out;
+}
+
+.animate-slide-in-left {
+  animation: slideInLeft 0.8s ease-out;
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.8s ease-out;
+}
+
+.animate-pulse-slow {
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.animate-shimmer {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200px 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+.animate-gradient {
+  background: linear-gradient(-45deg, #3b82f6, #8b5cf6, #06b6d4, #10b981);
+  background-size: 400% 400%;
+  animation: gradientShift 8s ease infinite;
+}
+
+/* Hover Effects */
+.hover-lift {
+  transition: all 0.3s ease;
+}
+
+.hover-lift:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+.hover-glow {
+  transition: all 0.3s ease;
+}
+
+.hover-glow:hover {
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+}
+
+.hover-scale {
+  transition: transform 0.3s ease;
+}
+
+.hover-scale:hover {
+  transform: scale(1.05);
+}
+
+/* Custom slider styles */
+.slider {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 8px;
+  border-radius: 4px;
+  outline: none;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.slider:hover {
+  opacity: 1;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #3b82f6;
+  cursor: pointer;
+  border: 2px solid white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: all 0.2s ease;
+}
+
+.slider::-webkit-slider-thumb:hover {
+  background: #2563eb;
+  transform: scale(1.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.slider::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #3b82f6;
+  cursor: pointer;
+  border: 2px solid white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: all 0.2s ease;
+}
+
+.slider::-moz-range-thumb:hover {
+  background: #2563eb;
+  transform: scale(1.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Price slider specific colors */
+.slider[style*="background: linear-gradient(to right, #3b82f6"]::-webkit-slider-thumb {
+  background: #3b82f6;
+}
+
+.slider[style*="background: linear-gradient(to right, #ef4444"]::-webkit-slider-thumb {
+  background: #ef4444;
+}
+
+/* Monthly payment slider specific colors */
+.slider[style*="background: linear-gradient(to right, #10b981"]::-webkit-slider-thumb {
+  background: #10b981;
+}
+
+.slider[style*="background: linear-gradient(to right, #f59e0b"]::-webkit-slider-thumb {
+  background: #f59e0b;
 }

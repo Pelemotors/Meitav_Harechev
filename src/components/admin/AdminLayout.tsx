@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Car, LogOut, Menu, X, Home, Upload, Settings, Users, Globe } from 'lucide-react';
+import { Car, LogOut, Menu, X, Home, Upload, Settings, Users, Globe, MessageSquare } from 'lucide-react';
 import { logout, getCurrentUser } from '../../utils/auth';
 import { useAuth } from '../../contexts/AuthContext';
 import { getRoleDisplayName, getRoleColor } from '../../utils/permissions';
@@ -24,6 +24,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({
     { id: 'dashboard', label: 'דף הבית', icon: Home, permission: 'admin:access' },
     { id: 'cars', label: 'ניהול רכבים', icon: Car, permission: 'cars:read' },
     { id: 'leads', label: 'ניהול לידים', icon: Users, permission: 'leads:read' },
+    { id: 'chat', label: 'עוזר AI', icon: MessageSquare, permission: 'admin:access' },
     { id: 'sitemap', label: 'ניהול Sitemap', icon: Globe, permission: 'sitemap:read' },
     { id: 'media', label: 'ניהול מדיה', icon: Upload, permission: 'cars:write' },
     { id: 'settings', label: 'הגדרות', icon: Settings, permission: 'settings:read' }
@@ -44,7 +45,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({
         <div className="flex items-center justify-between h-16 px-6 bg-darkBlue border-b border-blue-700">
           <div className="flex items-center gap-2">
             <Car className="w-8 h-8 text-primary" />
-            <span className="text-xl font-bold text-white">Strong Luxury Cars</span>
+            <span className="text-xl font-bold text-white">מיטב הרכב</span>
           </div>
           <button
             onClick={() => setSidebarOpen(false)}

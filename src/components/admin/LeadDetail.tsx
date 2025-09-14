@@ -1,595 +1,815 @@
 import React, { useState, useEffect } from 'react';
-import { X, Edit, Phone, Mail, MessageCircle, Calendar, User, Car, DollarSign, Clock, Tag, Plus, Send, FileText } from 'lucide-react';
-import { Lead, Car as CarType, User as UserType, LeadCommunication } from '../../types';
+import { 
+  ArrowRight, 
+  Phone, 
+  Mail, 
+  Calendar, 
+  MessageSquare, 
+  Plus,
+  CheckCircle,
+  Clock,
+  AlertCircle,
+  User,
+  Car,
+  DollarSign,
+  Edit,
+  Save,
+  X,
+  Send
+} from 'lucide-react';
 import { supabase } from '../../utils/supabase';
-import { Button, Badge, Card } from '../ui';
 
-interface LeadDetailProps {
-  lead: Lead;
-  cars: CarType[];
-  users: UserType[];
-  onUpdate: (leadId: string, updates: Partial<Lead>) => void;
-  onClose: () => void;
+interface Lead {
+  id: string;
+  first_name: string;
+  last_name?: string;
+  phone: string;
+  email?: string;
+  lead_type: string;
+  source: string;
+  status: string;
+  priority: string;
+  interested_cars: string[];
+  notes?: string;
+  budget_min?: number;
+  budget_max?: number;
+  financing_needed: boolean;
+  down_payment?: number;
+  monthly_payment_max?: number;
+  assigned_to?: string;
+  created_at: string;
+  updated_at: string;
+  last_contact_at?: string;
 }
 
-const LeadDetail: React.FC<LeadDetailProps> = ({
-  lead,
-  cars,
-  users,
-  onUpdate,
-  onClose
-}) => {
-  const [communications, setCommunications] = useState<LeadCommunication[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [isEditing, setIsEditing] = useState(false);
-  const [editData, setEditData] = useState<Partial<Lead>>(lead);
-  const [newNote, setNewNote] = useState('');
+interface Communication {
+  id: string;
+  communication_type: string;
+  subject?: string;
+  content: string;
+  direction: string;
+  outcome?: string;
+  follow_up_date?: string;
+  created_at: string;
+  user_id?: string;
+}
 
-  useEffect(() => {
-    fetchCommunications();
-  }, [lead.id]);
+interface Task {
+  id: string;
+  title: string;
+  description?: string;
+  task_type: string;
+  due_date?: string;
+  completed_at?: string;
+  status: string;
+  assigned_to?: string;
+  created_at: string;
+}
 
-  const fetchCommunications = async () => {
+interface LeadDetailProps {
+  leadId: string;
+  onBack: () => void;
+}
+
+const LeadDetail: React.FC<LeadDetailProps> = ({ leadId, onBack }) => {
+  const [lead, setLead] = useState<Lead | null>(null);
+  const [communications, setCommunications] = useState<Communication[]>([]);
+  const [tasks, setTasks] = useState<Task[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [editing, setEditing] = useState(false);
+  const [showAddCommunication, setShowAddCommunication] = useState(false);
+  const [showAddTask, setShowAddTask] = useState(false);
+  
+  // טופס תקשורת חדשה
+  const [newCommunication, setNewCommunication] = useState({
+    communication_type: 'call',
+    subject: '',
+    content: '',
+    direction: 'outbound',
+    outcome: '',
+    follow_up_date: ''
+  });
+
+  // טופס משימה חדשה
+  const [newTask, setNewTask] = useState({
+    title: '',
+    description: '',
+    task_type: 'call',
+    due_date: '',
+    assigned_to: ''
+  });
+
+  // טעינת נתוני הליד
+  const fetchLeadData = async () => {
     try {
       setLoading(true);
-      const { data, error } = await supabase
+      
+      // טעינת פרטי הליד
+      const { data: leadData, error: leadError } = await supabase
+        .from('leads')
+        .select('*')
+        .eq('id', leadId)
+        .single();
+
+      if (leadError) throw leadError;
+      setLead(leadData);
+
+      // טעינת תקשורות
+      const { data: commData, error: commError } = await supabase
         .from('lead_communications')
         .select('*')
-        .eq('lead_id', lead.id)
+        .eq('lead_id', leadId)
         .order('created_at', { ascending: false });
 
-      if (error) throw error;
-      setCommunications(data || []);
-    } catch (err) {
-      console.error('Error fetching communications:', err);
+      if (commError) throw commError;
+      setCommunications(commData || []);
+
+      // טעינת משימות
+      const { data: tasksData, error: tasksError } = await supabase
+        .from('lead_tasks')
+        .select('*')
+        .eq('lead_id', leadId)
+        .order('created_at', { ascending: false });
+
+      if (tasksError) throw tasksError;
+      setTasks(tasksData || []);
+
+    } catch (error) {
+      console.error('Error fetching lead data:', error);
     } finally {
       setLoading(false);
     }
   };
 
-  const handleSave = async () => {
-    try {
-      await onUpdate(lead.id, editData);
-      setIsEditing(false);
-    } catch (err) {
-      console.error('Error updating lead:', err);
-    }
-  };
+  useEffect(() => {
+    fetchLeadData();
+  }, [leadId]);
 
-  const handleAddNote = async () => {
-    if (!newNote.trim()) return;
+  // עדכון פרטי ליד
+  const updateLead = async (updates: Partial<Lead>) => {
+    if (!lead) return;
 
     try {
-      const { data, error } = await supabase
-        .from('lead_communications')
-        .insert([{
-          lead_id: lead.id,
-          type: 'note',
-          direction: 'outbound',
-          content: newNote,
-          status: 'sent'
-        }])
-        .select()
-        .single();
+      const { error } = await supabase
+        .from('leads')
+        .update(updates)
+        .eq('id', leadId);
 
       if (error) throw error;
       
-      setCommunications([data, ...communications]);
-      setNewNote('');
-    } catch (err) {
-      console.error('Error adding note:', err);
+      setLead({ ...lead, ...updates });
+      setEditing(false);
+    } catch (error) {
+      console.error('Error updating lead:', error);
     }
   };
 
-  const formatDate = (date: Date | string) => {
-    return new Date(date).toLocaleDateString('he-IL', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
-  };
+  // הוספת תקשורת חדשה
+  const addCommunication = async () => {
+    try {
+      const { error } = await supabase
+        .from('lead_communications')
+        .insert({
+          lead_id: leadId,
+          ...newCommunication,
+          follow_up_date: newCommunication.follow_up_date || null
+        });
 
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('he-IL', {
-      style: 'currency',
-      currency: 'ILS',
-      minimumFractionDigits: 0
-    }).format(amount);
-  };
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'new': return 'info';
-      case 'contacted': return 'warning';
-      case 'qualified': return 'success';
-      case 'proposal': return 'primary';
-      case 'negotiation': return 'secondary';
-      case 'closed': return 'success';
-      case 'lost': return 'error';
-      default: return 'default';
+      if (error) throw error;
+      
+      setNewCommunication({
+        communication_type: 'call',
+        subject: '',
+        content: '',
+        direction: 'outbound',
+        outcome: '',
+        follow_up_date: ''
+      });
+      setShowAddCommunication(false);
+      fetchLeadData();
+    } catch (error) {
+      console.error('Error adding communication:', error);
     }
   };
 
-  const getStatusText = (status: string) => {
-    const statusMap: { [key: string]: string } = {
-      'new': 'חדש',
-      'contacted': 'נוצר קשר',
-      'qualified': 'מתאים',
-      'proposal': 'הצעה',
-      'negotiation': 'משא ומתן',
-      'closed': 'נסגר',
-      'lost': 'אבוד'
-    };
-    return statusMap[status] || status;
-  };
+  // הוספת משימה חדשה
+  const addTask = async () => {
+    try {
+      const { error } = await supabase
+        .from('lead_tasks')
+        .insert({
+          lead_id: leadId,
+          ...newTask,
+          due_date: newTask.due_date || null,
+          assigned_to: newTask.assigned_to || null
+        });
 
-  const getPriorityText = (priority: string) => {
-    const priorityMap: { [key: string]: string } = {
-      'low': 'נמוך',
-      'medium': 'בינוני',
-      'high': 'גבוה',
-      'urgent': 'דחוף'
-    };
-    return priorityMap[priority] || priority;
-  };
-
-  const getSourceText = (source: string) => {
-    const sourceMap: { [key: string]: string } = {
-      'website': 'אתר',
-      'whatsapp': 'WhatsApp',
-      'phone': 'טלפון',
-      'email': 'אימייל',
-      'social': 'רשתות חברתיות',
-      'referral': 'המלצה'
-    };
-    return sourceMap[source] || source;
-  };
-
-  const getTimelineText = (timeline: string) => {
-    const timelineMap: { [key: string]: string } = {
-      'immediate': 'מיידי',
-      '1-3_months': '1-3 חודשים',
-      '3-6_months': '3-6 חודשים',
-      '6+_months': '6+ חודשים'
-    };
-    return timelineMap[timeline] || timeline;
-  };
-
-  const getCommunicationIcon = (type: string) => {
-    switch (type) {
-      case 'whatsapp': return <MessageCircle className="w-4 h-4" />;
-      case 'phone': return <Phone className="w-4 h-4" />;
-      case 'email': return <Mail className="w-4 h-4" />;
-      case 'note': return <FileText className="w-4 h-4" />;
-      default: return <Tag className="w-4 h-4" />;
+      if (error) throw error;
+      
+      setNewTask({
+        title: '',
+        description: '',
+        task_type: 'call',
+        due_date: '',
+        assigned_to: ''
+      });
+      setShowAddTask(false);
+      fetchLeadData();
+    } catch (error) {
+      console.error('Error adding task:', error);
     }
   };
 
-  const getCommunicationColor = (type: string) => {
-    switch (type) {
-      case 'whatsapp': return 'text-green-600';
-      case 'phone': return 'text-blue-600';
-      case 'email': return 'text-purple-600';
-      case 'note': return 'text-slc-gray';
-      default: return 'text-slc-gray';
+  // עדכון סטטוס משימה
+  const updateTaskStatus = async (taskId: string, status: string) => {
+    try {
+      const updates: any = { status };
+      if (status === 'completed') {
+        updates.completed_at = new Date().toISOString();
+      }
+
+      const { error } = await supabase
+        .from('lead_tasks')
+        .update(updates)
+        .eq('id', taskId);
+
+      if (error) throw error;
+      fetchLeadData();
+    } catch (error) {
+      console.error('Error updating task status:', error);
     }
   };
 
-  const selectedCar = cars.find(car => car.id === lead.interestInCar);
-  const assignedUser = users.find(user => user.id === lead.assignedTo);
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+
+  if (!lead) {
+    return (
+      <div className="text-center py-8">
+        <AlertCircle className="mx-auto h-12 w-12 text-gray-400" />
+        <h3 className="mt-2 text-sm font-medium text-gray-900">ליד לא נמצא</h3>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
-      {/* Header */}
+      {/* כותרת וניווט */}
       <div className="flex items-center justify-between">
-        <div>
-          <h3 className="heading-2 text-slc-dark hebrew">פרטי ליד</h3>
-          <p className="text-slc-gray hebrew">ניהול ועקיבה אחר הליד</p>
+        <div className="flex items-center gap-4">
+          <button
+            onClick={onBack}
+            className="flex items-center gap-2 text-gray-600 hover:text-gray-900"
+          >
+            <ArrowRight className="w-4 h-4" />
+            חזור לרשימה
+          </button>
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900">
+              {lead.first_name} {lead.last_name}
+            </h1>
+            <p className="text-gray-600">פרטי ליד</p>
+          </div>
         </div>
         
-        <div className="flex items-center gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setIsEditing(!isEditing)}
+        <div className="flex gap-3">
+          <button
+            onClick={() => setEditing(!editing)}
+            className="btn-secondary flex items-center gap-2"
           >
-            <Edit className="w-4 h-4 ml-2" />
-            {isEditing ? 'ביטול' : 'ערוך'}
-          </Button>
-          
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={onClose}
-          >
-            <X className="w-4 h-4" />
-          </Button>
+            <Edit className="w-4 h-4" />
+            {editing ? 'בטל עריכה' : 'ערוך'}
+          </button>
+          <button className="btn-primary flex items-center gap-2">
+            <Send className="w-4 h-4" />
+            שלח הודעה
+          </button>
         </div>
       </div>
 
-      {/* Lead Information */}
-      <Card className="p-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Basic Info */}
-          <div className="space-y-4">
-            <h4 className="heading-3 text-slc-dark hebrew">מידע בסיסי</h4>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* פרטי ליד */}
+        <div className="lg:col-span-2 space-y-6">
+          {/* מידע בסיסי */}
+          <div className="bg-white rounded-lg shadow-sm border p-6">
+            <h2 className="text-lg font-semibold text-gray-900 mb-4">פרטים אישיים</h2>
             
-            <div className="space-y-3">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-slc-gray mb-1 hebrew">שם מלא</label>
-                {isEditing ? (
-                  <div className="grid grid-cols-2 gap-2">
-                    <input
-                      type="text"
-                      value={editData.firstName || ''}
-                      onChange={(e) => setEditData({ ...editData, firstName: e.target.value })}
-                      className="input-field"
-                      placeholder="שם פרטי"
-                    />
-                    <input
-                      type="text"
-                      value={editData.lastName || ''}
-                      onChange={(e) => setEditData({ ...editData, lastName: e.target.value })}
-                      className="input-field"
-                      placeholder="שם משפחה"
-                    />
-                  </div>
-                ) : (
-                  <p className="text-slc-dark hebrew">{lead.firstName} {lead.lastName}</p>
-                )}
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-slc-gray mb-1 hebrew">אימייל</label>
-                {isEditing ? (
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  שם פרטי
+                </label>
+                {editing ? (
                   <input
-                    type="email"
-                    value={editData.email || ''}
-                    onChange={(e) => setEditData({ ...editData, email: e.target.value })}
-                    className="input-field"
+                    type="text"
+                    value={lead.first_name}
+                    onChange={(e) => setLead({...lead, first_name: e.target.value})}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-right"
                   />
                 ) : (
-                  <p className="text-slc-dark hebrew">{lead.email}</p>
+                  <p className="text-gray-900">{lead.first_name}</p>
                 )}
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-slc-gray mb-1 hebrew">טלפון</label>
-                {isEditing ? (
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  שם משפחה
+                </label>
+                {editing ? (
                   <input
-                    type="tel"
-                    value={editData.phone || ''}
-                    onChange={(e) => setEditData({ ...editData, phone: e.target.value })}
-                    className="input-field"
+                    type="text"
+                    value={lead.last_name || ''}
+                    onChange={(e) => setLead({...lead, last_name: e.target.value})}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-right"
                   />
                 ) : (
-                  <p className="text-slc-dark hebrew">{lead.phone}</p>
+                  <p className="text-gray-900">{lead.last_name || '-'}</p>
                 )}
               </div>
 
-              {lead.whatsapp && (
-                <div>
-                  <label className="block text-sm font-medium text-slc-gray mb-1 hebrew">WhatsApp</label>
-                  <p className="text-slc-dark hebrew">{lead.whatsapp}</p>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  טלפון
+                </label>
+                <div className="flex items-center gap-2">
+                  {editing ? (
+                    <input
+                      type="tel"
+                      value={lead.phone}
+                      onChange={(e) => setLead({...lead, phone: e.target.value})}
+                      className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-right"
+                    />
+                  ) : (
+                    <>
+                      <p className="text-gray-900">{lead.phone}</p>
+                      <button className="text-primary hover:text-primary-dark">
+                        <Phone className="w-4 h-4" />
+                      </button>
+                    </>
+                  )}
                 </div>
-              )}
-            </div>
-          </div>
-
-          {/* Status and Priority */}
-          <div className="space-y-4">
-            <h4 className="heading-3 text-slc-dark hebrew">סטטוס ועדיפות</h4>
-            
-            <div className="space-y-3">
-              <div>
-                <label className="block text-sm font-medium text-slc-gray mb-1 hebrew">סטטוס</label>
-                {isEditing ? (
-                  <select
-                    value={editData.status || lead.status}
-                    onChange={(e) => setEditData({ ...editData, status: e.target.value as any })}
-                    className="input-field"
-                  >
-                    <option value="new">חדש</option>
-                    <option value="contacted">נוצר קשר</option>
-                    <option value="qualified">מתאים</option>
-                    <option value="proposal">הצעה</option>
-                    <option value="negotiation">משא ומתן</option>
-                    <option value="closed">נסגר</option>
-                    <option value="lost">אבוד</option>
-                  </select>
-                ) : (
-                  <Badge variant={getStatusColor(lead.status) as any}>
-                    {getStatusText(lead.status)}
-                  </Badge>
-                )}
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-slc-gray mb-1 hebrew">עדיפות</label>
-                {isEditing ? (
-                  <select
-                    value={editData.priority || lead.priority}
-                    onChange={(e) => setEditData({ ...editData, priority: e.target.value as any })}
-                    className="input-field"
-                  >
-                    <option value="low">נמוך</option>
-                    <option value="medium">בינוני</option>
-                    <option value="high">גבוה</option>
-                    <option value="urgent">דחוף</option>
-                  </select>
-                ) : (
-                  <Badge variant={editData.priority === 'urgent' ? 'error' : 'default'}>
-                    {getPriorityText(lead.priority)}
-                  </Badge>
-                )}
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-slc-gray mb-1 hebrew">מקור</label>
-                <p className="text-slc-dark hebrew">{getSourceText(lead.source)}</p>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-slc-gray mb-1 hebrew">מוקצה ל</label>
-                {isEditing ? (
-                  <select
-                    value={editData.assignedTo || ''}
-                    onChange={(e) => setEditData({ ...editData, assignedTo: e.target.value })}
-                    className="input-field"
-                  >
-                    <option value="">לא מוקצה</option>
-                    {users.map(user => (
-                      <option key={user.id} value={user.id}>
-                        {user.username}
-                      </option>
-                    ))}
-                  </select>
-                ) : (
-                  <p className="text-slc-dark hebrew">
-                    {assignedUser ? assignedUser.username : 'לא מוקצה'}
-                  </p>
-                )}
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  אימייל
+                </label>
+                <div className="flex items-center gap-2">
+                  {editing ? (
+                    <input
+                      type="email"
+                      value={lead.email || ''}
+                      onChange={(e) => setLead({...lead, email: e.target.value})}
+                      className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-right"
+                    />
+                  ) : (
+                    <>
+                      <p className="text-gray-900">{lead.email || '-'}</p>
+                      {lead.email && (
+                        <button className="text-primary hover:text-primary-dark">
+                          <Mail className="w-4 h-4" />
+                        </button>
+                      )}
+                    </>
+                  )}
+                </div>
               </div>
             </div>
-          </div>
-        </div>
 
-        {/* Car Interest and Budget */}
-        <div className="mt-6 pt-6 border-t border-slc-light-gray">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label className="block text-sm font-medium text-slc-gray mb-1 hebrew">רכב מעניין</label>
-              {isEditing ? (
-                <select
-                  value={editData.interestInCar || ''}
-                  onChange={(e) => setEditData({ ...editData, interestInCar: e.target.value })}
-                  className="input-field"
+            {editing && (
+              <div className="mt-4 flex gap-3">
+                <button
+                  onClick={() => updateLead(lead)}
+                  className="btn-primary flex items-center gap-2"
                 >
-                  <option value="">לא נבחר</option>
-                  {cars.map(car => (
-                    <option key={car.id} value={car.id}>
-                      {car.name} - {formatCurrency(car.price)}
-                    </option>
-                  ))}
-                </select>
-              ) : (
-                <div className="flex items-center gap-2">
-                  {selectedCar ? (
-                    <>
-                      <Car className="w-4 h-4 text-slc-bronze" />
-                      <span className="text-slc-dark hebrew">
-                        {selectedCar.name} - {formatCurrency(selectedCar.price)}
-                      </span>
-                    </>
-                  ) : (
-                    <span className="text-slc-gray hebrew">לא נבחר רכב</span>
-                  )}
-                </div>
-              )}
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-slc-gray mb-1 hebrew">תקציב</label>
-              {isEditing ? (
-                <input
-                  type="number"
-                  value={editData.budget || ''}
-                  onChange={(e) => setEditData({ ...editData, budget: Number(e.target.value) })}
-                  className="input-field"
-                  placeholder="תקציב בשקלים"
-                />
-              ) : (
-                <div className="flex items-center gap-2">
-                  {lead.budget ? (
-                    <>
-                      <DollarSign className="w-4 h-4 text-slc-success" />
-                      <span className="text-slc-dark hebrew">{formatCurrency(lead.budget)}</span>
-                    </>
-                  ) : (
-                    <span className="text-slc-gray hebrew">לא צוין</span>
-                  )}
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-
-        {/* Timeline and Notes */}
-        <div className="mt-6 pt-6 border-t border-slc-light-gray">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label className="block text-sm font-medium text-slc-gray mb-1 hebrew">לוח זמנים</label>
-              {isEditing ? (
-                <select
-                  value={editData.timeline || ''}
-                  onChange={(e) => setEditData({ ...editData, timeline: e.target.value as any })}
-                  className="input-field"
+                  <Save className="w-4 h-4" />
+                  שמור שינויים
+                </button>
+                <button
+                  onClick={() => setEditing(false)}
+                  className="btn-secondary flex items-center gap-2"
                 >
-                  <option value="">לא צוין</option>
-                  <option value="immediate">מיידי</option>
-                  <option value="1-3_months">1-3 חודשים</option>
-                  <option value="3-6_months">3-6 חודשים</option>
-                  <option value="6+_months">6+ חודשים</option>
-                </select>
-              ) : (
-                <p className="text-slc-dark hebrew">
-                  {lead.timeline ? getTimelineText(lead.timeline) : 'לא צוין'}
-                </p>
-              )}
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-slc-gray mb-1 hebrew">מעקב הבא</label>
-              {isEditing ? (
-                <input
-                  type="datetime-local"
-                  value={editData.nextFollowUpDate ? new Date(editData.nextFollowUpDate).toISOString().slice(0, 16) : ''}
-                  onChange={(e) => setEditData({ ...editData, nextFollowUpDate: new Date(e.target.value) })}
-                  className="input-field"
-                />
-              ) : (
-                <div className="flex items-center gap-2">
-                  {lead.nextFollowUpDate ? (
-                    <>
-                      <Clock className="w-4 h-4 text-slc-gray" />
-                      <span className="text-slc-dark hebrew">{formatDate(lead.nextFollowUpDate)}</span>
-                    </>
-                  ) : (
-                    <span className="text-slc-gray hebrew">לא נקבע</span>
-                  )}
-                </div>
-              )}
-            </div>
+                  <X className="w-4 h-4" />
+                  בטל
+                </button>
+              </div>
+            )}
           </div>
-        </div>
 
-        {/* Notes */}
-        <div className="mt-6 pt-6 border-t border-slc-light-gray">
-          <label className="block text-sm font-medium text-slc-gray mb-1 hebrew">הערות</label>
-          {isEditing ? (
-            <textarea
-              value={editData.notes || ''}
-              onChange={(e) => setEditData({ ...editData, notes: e.target.value })}
-              className="input-field w-full h-24"
-              placeholder="הערות על הליד..."
-            />
-          ) : (
-            <p className="text-slc-dark hebrew whitespace-pre-wrap">
-              {lead.notes || 'אין הערות'}
-            </p>
-          )}
-        </div>
-
-        {/* Save Button */}
-        {isEditing && (
-          <div className="mt-6 flex justify-end gap-2">
-            <Button
-              variant="outline"
-              onClick={() => {
-                setIsEditing(false);
-                setEditData(lead);
-              }}
-            >
-              ביטול
-            </Button>
-            <Button
-              variant="primary"
-              onClick={handleSave}
-            >
-              שמור שינויים
-            </Button>
+          {/* הערות */}
+          <div className="bg-white rounded-lg shadow-sm border p-6">
+            <h2 className="text-lg font-semibold text-gray-900 mb-4">הערות</h2>
+            {editing ? (
+              <textarea
+                value={lead.notes || ''}
+                onChange={(e) => setLead({...lead, notes: e.target.value})}
+                rows={4}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-right"
+                placeholder="הוסף הערות..."
+              />
+            ) : (
+              <p className="text-gray-900 whitespace-pre-wrap">
+                {lead.notes || 'אין הערות'}
+              </p>
+            )}
           </div>
-        )}
-      </Card>
 
-      {/* Communications */}
-      <Card className="p-6">
-        <div className="flex items-center justify-between mb-4">
-          <h4 className="heading-3 text-slc-dark hebrew">היסטוריית תקשורת</h4>
-          <div className="text-sm text-slc-gray hebrew">
-            {communications.length} הודעות
-          </div>
-        </div>
-
-        {/* Add Note */}
-        <div className="mb-6 p-4 bg-slc-light-gray rounded-lg">
-          <div className="flex gap-2">
-            <textarea
-              value={newNote}
-              onChange={(e) => setNewNote(e.target.value)}
-              placeholder="הוסף הערה חדשה..."
-              className="input-field flex-1 h-20"
-            />
-            <Button
-              variant="primary"
-              onClick={handleAddNote}
-              disabled={!newNote.trim()}
-              className="self-end"
-            >
-              <Send className="w-4 h-4 ml-2" />
-              שלח
-            </Button>
-          </div>
-        </div>
-
-        {/* Communications List */}
-        <div className="space-y-4">
-          {loading ? (
-            <div className="text-center py-8">
-              <div className="animate-spin w-6 h-6 border-2 border-slc-bronze border-t-transparent rounded-full mx-auto mb-2" />
-              <p className="text-slc-gray hebrew">טוען הודעות...</p>
-            </div>
-          ) : communications.length === 0 ? (
-            <div className="text-center py-8">
-              <MessageCircle className="w-12 h-12 text-slc-gray mx-auto mb-2" />
-              <p className="text-slc-gray hebrew">אין הודעות עדיין</p>
-            </div>
-          ) : (
-            communications.map((comm) => (
-              <div
-                key={comm.id}
-                className={`p-4 border rounded-lg ${
-                  comm.direction === 'inbound' 
-                    ? 'border-slc-info/20 bg-slc-info/5' 
-                    : 'border-slc-bronze/20 bg-slc-bronze/5'
-                }`}
+          {/* תקשורות */}
+          <div className="bg-white rounded-lg shadow-sm border p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-lg font-semibold text-gray-900">תקשורות</h2>
+              <button
+                onClick={() => setShowAddCommunication(true)}
+                className="btn-primary flex items-center gap-2"
               >
-                <div className="flex items-start justify-between mb-2">
-                  <div className="flex items-center gap-2">
-                    <div className={`${getCommunicationColor(comm.type)}`}>
-                      {getCommunicationIcon(comm.type)}
-                    </div>
-                    <span className="text-sm font-medium text-slc-dark hebrew">
-                      {comm.type === 'note' ? 'הערה' : 
-                       comm.type === 'whatsapp' ? 'WhatsApp' :
-                       comm.type === 'phone' ? 'טלפון' :
-                       comm.type === 'email' ? 'אימייל' : comm.type}
-                    </span>
-                    <Badge variant={comm.direction === 'inbound' ? 'info' : 'primary'} size="sm">
-                      {comm.direction === 'inbound' ? 'נכנס' : 'יוצא'}
-                    </Badge>
+                <Plus className="w-4 h-4" />
+                הוסף תקשורת
+              </button>
+            </div>
+
+            {showAddCommunication && (
+              <div className="mb-6 p-4 border border-gray-200 rounded-lg bg-gray-50">
+                <h3 className="text-md font-medium text-gray-900 mb-4">תקשורת חדשה</h3>
+                <div className="space-y-4">
+                  <div className="grid grid-cols-2 gap-4">
+                    <select
+                      value={newCommunication.communication_type}
+                      onChange={(e) => setNewCommunication({...newCommunication, communication_type: e.target.value})}
+                      className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+                    >
+                      <option value="call">שיחה</option>
+                      <option value="email">אימייל</option>
+                      <option value="sms">SMS</option>
+                      <option value="whatsapp">WhatsApp</option>
+                      <option value="meeting">פגישה</option>
+                      <option value="note">הערה</option>
+                    </select>
+
+                    <select
+                      value={newCommunication.direction}
+                      onChange={(e) => setNewCommunication({...newCommunication, direction: e.target.value})}
+                      className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+                    >
+                      <option value="inbound">נכנס</option>
+                      <option value="outbound">יוצא</option>
+                    </select>
                   </div>
-                  <span className="text-xs text-slc-gray hebrew">
-                    {formatDate(comm.createdAt)}
-                  </span>
+
+                  <input
+                    type="text"
+                    placeholder="נושא"
+                    value={newCommunication.subject}
+                    onChange={(e) => setNewCommunication({...newCommunication, subject: e.target.value})}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-right"
+                  />
+
+                  <textarea
+                    placeholder="תוכן התקשורת"
+                    value={newCommunication.content}
+                    onChange={(e) => setNewCommunication({...newCommunication, content: e.target.value})}
+                    rows={3}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-right"
+                  />
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <input
+                      type="text"
+                      placeholder="תוצאה"
+                      value={newCommunication.outcome}
+                      onChange={(e) => setNewCommunication({...newCommunication, outcome: e.target.value})}
+                      className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-right"
+                    />
+
+                    <input
+                      type="datetime-local"
+                      value={newCommunication.follow_up_date}
+                      onChange={(e) => setNewCommunication({...newCommunication, follow_up_date: e.target.value})}
+                      className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+                    />
+                  </div>
+
+                  <div className="flex gap-3">
+                    <button
+                      onClick={addCommunication}
+                      className="btn-primary flex items-center gap-2"
+                    >
+                      <Save className="w-4 h-4" />
+                      שמור
+                    </button>
+                    <button
+                      onClick={() => setShowAddCommunication(false)}
+                      className="btn-secondary"
+                    >
+                      בטל
+                    </button>
+                  </div>
                 </div>
-                
-                <div className="text-slc-dark hebrew whitespace-pre-wrap">
-                  {comm.content}
+              </div>
+            )}
+
+            <div className="space-y-4">
+              {communications.map((comm) => (
+                <div key={comm.id} className="border border-gray-200 rounded-lg p-4">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-2">
+                      <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">
+                        {comm.communication_type}
+                      </span>
+                      <span className={`px-2 py-1 text-xs rounded-full ${
+                        comm.direction === 'inbound' 
+                          ? 'bg-green-100 text-green-800' 
+                          : 'bg-orange-100 text-orange-800'
+                      }`}>
+                        {comm.direction === 'inbound' ? 'נכנס' : 'יוצא'}
+                      </span>
+                    </div>
+                    <span className="text-sm text-gray-500">
+                      {new Date(comm.created_at).toLocaleDateString('he-IL')}
+                    </span>
+                  </div>
+                  
+                  {comm.subject && (
+                    <h4 className="font-medium text-gray-900 mb-2">{comm.subject}</h4>
+                  )}
+                  
+                  <p className="text-gray-700 text-sm">{comm.content}</p>
+                  
+                  {comm.outcome && (
+                    <p className="text-sm text-gray-600 mt-2">
+                      <strong>תוצאה:</strong> {comm.outcome}
+                    </p>
+                  )}
+                  
+                  {comm.follow_up_date && (
+                    <p className="text-sm text-gray-600">
+                      <strong>מעקב:</strong> {new Date(comm.follow_up_date).toLocaleDateString('he-IL')}
+                    </p>
+                  )}
                 </div>
+              ))}
+
+              {communications.length === 0 && (
+                <p className="text-gray-500 text-center py-4">אין תקשורות עדיין</p>
+              )}
+            </div>
+          </div>
+
+          {/* משימות */}
+          <div className="bg-white rounded-lg shadow-sm border p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-lg font-semibold text-gray-900">משימות</h2>
+              <button
+                onClick={() => setShowAddTask(true)}
+                className="btn-primary flex items-center gap-2"
+              >
+                <Plus className="w-4 h-4" />
+                הוסף משימה
+              </button>
+            </div>
+
+            {showAddTask && (
+              <div className="mb-6 p-4 border border-gray-200 rounded-lg bg-gray-50">
+                <h3 className="text-md font-medium text-gray-900 mb-4">משימה חדשה</h3>
+                <div className="space-y-4">
+                  <input
+                    type="text"
+                    placeholder="כותרת המשימה"
+                    value={newTask.title}
+                    onChange={(e) => setNewTask({...newTask, title: e.target.value})}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-right"
+                  />
+
+                  <textarea
+                    placeholder="תיאור המשימה"
+                    value={newTask.description}
+                    onChange={(e) => setNewTask({...newTask, description: e.target.value})}
+                    rows={3}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-right"
+                  />
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <select
+                      value={newTask.task_type}
+                      onChange={(e) => setNewTask({...newTask, task_type: e.target.value})}
+                      className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+                    >
+                      <option value="call">שיחה</option>
+                      <option value="email">אימייל</option>
+                      <option value="meeting">פגישה</option>
+                      <option value="follow_up">מעקב</option>
+                      <option value="other">אחר</option>
+                    </select>
+
+                    <input
+                      type="datetime-local"
+                      value={newTask.due_date}
+                      onChange={(e) => setNewTask({...newTask, due_date: e.target.value})}
+                      className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+                    />
+                  </div>
+
+                  <div className="flex gap-3">
+                    <button
+                      onClick={addTask}
+                      className="btn-primary flex items-center gap-2"
+                    >
+                      <Save className="w-4 h-4" />
+                      שמור
+                    </button>
+                    <button
+                      onClick={() => setShowAddTask(false)}
+                      className="btn-secondary"
+                    >
+                      בטל
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            <div className="space-y-3">
+              {tasks.map((task) => (
+                <div key={task.id} className="border border-gray-200 rounded-lg p-4">
+                  <div className="flex items-center justify-between mb-2">
+                    <h4 className="font-medium text-gray-900">{task.title}</h4>
+                    <select
+                      value={task.status}
+                      onChange={(e) => updateTaskStatus(task.id, e.target.value)}
+                      className={`px-2 py-1 text-xs rounded-full border-0 focus:ring-2 focus:ring-primary ${
+                        task.status === 'completed' 
+                          ? 'bg-green-100 text-green-800'
+                          : task.status === 'in_progress'
+                          ? 'bg-yellow-100 text-yellow-800'
+                          : 'bg-gray-100 text-gray-800'
+                      }`}
+                    >
+                      <option value="pending">ממתין</option>
+                      <option value="in_progress">בביצוע</option>
+                      <option value="completed">הושלם</option>
+                      <option value="cancelled">בוטל</option>
+                    </select>
+                  </div>
+                  
+                  {task.description && (
+                    <p className="text-gray-700 text-sm mb-2">{task.description}</p>
+                  )}
+                  
+                  <div className="flex items-center gap-4 text-sm text-gray-500">
+                    <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">
+                      {task.task_type}
+                    </span>
+                    {task.due_date && (
+                      <span>תאריך יעד: {new Date(task.due_date).toLocaleDateString('he-IL')}</span>
+                    )}
+                    <span>נוצר: {new Date(task.created_at).toLocaleDateString('he-IL')}</span>
+                  </div>
+                </div>
+              ))}
+
+              {tasks.length === 0 && (
+                <p className="text-gray-500 text-center py-4">אין משימות עדיין</p>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* סיידבר */}
+        <div className="space-y-6">
+          {/* סטטוס ועדיפות */}
+          <div className="bg-white rounded-lg shadow-sm border p-6">
+            <h2 className="text-lg font-semibold text-gray-900 mb-4">סטטוס</h2>
+            
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  סטטוס ליד
+                </label>
+                <select
+                  value={lead.status}
+                  onChange={(e) => updateLead({ status: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+                >
+                  <option value="new">חדש</option>
+                  <option value="contacted">יצרתי קשר</option>
+                  <option value="qualified">מתאים</option>
+                  <option value="converted">התגייר</option>
+                  <option value="lost">אבד</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  עדיפות
+                </label>
+                <select
+                  value={lead.priority}
+                  onChange={(e) => updateLead({ priority: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+                >
+                  <option value="low">נמוך</option>
+                  <option value="medium">בינוני</option>
+                  <option value="high">גבוה</option>
+                  <option value="urgent">דחוף</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  סוג ליד
+                </label>
+                <select
+                  value={lead.lead_type}
+                  onChange={(e) => updateLead({ lead_type: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+                >
+                  <option value="general">כללי</option>
+                  <option value="car_inquiry">חקירה על רכב</option>
+                  <option value="financing">מימון</option>
+                  <option value="service">שירות</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          {/* מידע על התקציב */}
+          {(lead.budget_min || lead.budget_max || lead.financing_needed) && (
+            <div className="bg-white rounded-lg shadow-sm border p-6">
+              <h2 className="text-lg font-semibold text-gray-900 mb-4">מידע תקציבי</h2>
+              
+              <div className="space-y-3">
+                {lead.budget_min && (
+                  <div>
+                    <span className="text-sm text-gray-600">תקציב מינימלי:</span>
+                    <p className="font-medium">₪{lead.budget_min.toLocaleString()}</p>
+                  </div>
+                )}
                 
-                {comm.subject && (
-                  <div className="mt-2 text-sm text-slc-gray hebrew">
-                    <strong>נושא:</strong> {comm.subject}
+                {lead.budget_max && (
+                  <div>
+                    <span className="text-sm text-gray-600">תקציב מקסימלי:</span>
+                    <p className="font-medium">₪{lead.budget_max.toLocaleString()}</p>
+                  </div>
+                )}
+                
+                {lead.financing_needed && (
+                  <div className="p-3 bg-blue-50 rounded-lg">
+                    <div className="flex items-center gap-2 text-blue-800">
+                      <DollarSign className="w-4 h-4" />
+                      <span className="font-medium">מעוניין במימון</span>
+                    </div>
+                    
+                    {lead.down_payment && (
+                      <p className="text-sm text-blue-700 mt-1">
+                        מקדמה: ₪{lead.down_payment.toLocaleString()}
+                      </p>
+                    )}
+                    
+                    {lead.monthly_payment_max && (
+                      <p className="text-sm text-blue-700">
+                        החזר חודשי מקסימלי: ₪{lead.monthly_payment_max.toLocaleString()}
+                      </p>
+                    )}
                   </div>
                 )}
               </div>
-            ))
+            </div>
           )}
+
+          {/* מידע על התאריכים */}
+          <div className="bg-white rounded-lg shadow-sm border p-6">
+            <h2 className="text-lg font-semibold text-gray-900 mb-4">מידע נוסף</h2>
+            
+            <div className="space-y-3">
+              <div>
+                <span className="text-sm text-gray-600">נוצר:</span>
+                <p className="font-medium">{new Date(lead.created_at).toLocaleDateString('he-IL')}</p>
+              </div>
+              
+              <div>
+                <span className="text-sm text-gray-600">עודכן:</span>
+                <p className="font-medium">{new Date(lead.updated_at).toLocaleDateString('he-IL')}</p>
+              </div>
+              
+              {lead.last_contact_at && (
+                <div>
+                  <span className="text-sm text-gray-600">קשר אחרון:</span>
+                  <p className="font-medium">{new Date(lead.last_contact_at).toLocaleDateString('he-IL')}</p>
+                </div>
+              )}
+              
+              <div>
+                <span className="text-sm text-gray-600">מקור:</span>
+                <p className="font-medium">{lead.source}</p>
+              </div>
+            </div>
+          </div>
         </div>
-      </Card>
+      </div>
     </div>
   );
 };

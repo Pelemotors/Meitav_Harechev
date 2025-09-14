@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useEffect, ReactNode } from
 import { User } from '../types';
 import { getCurrentUser, logout as authLogout } from '../utils/auth';
 import { hasPermission, isAdmin, canManageCars, canManageLeads, canManageUsers, canAccessAdmin, Permission } from '../utils/permissions';
+import { supabase } from '../utils/supabase';
 
 interface AuthContextType {
   user: User | null;
@@ -29,9 +30,41 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   useEffect(() => {
     // Check if user is already logged in
-    const currentUser = getCurrentUser();
-    setUser(currentUser);
-    setIsLoading(false);
+    const checkAuth = async () => {
+      try {
+        const currentUser = await getCurrentUser();
+        setUser(currentUser);
+      } catch (error) {
+        console.error('Error checking auth:', error);
+        setUser(null);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    
+    checkAuth();
+
+    // Listen for auth state changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (event === 'SIGNED_OUT' || !session) {
+        setUser(null);
+        localStorage.removeItem('user');
+      } else if (event === 'SIGNED_IN' && session.user) {
+        const userData = {
+          id: session.user.id,
+          username: session.user.email?.split('@')[0] || 'admin',
+          email: session.user.email || '',
+          role: 'admin',
+          lastLogin: new Date()
+        };
+        localStorage.setItem('user', JSON.stringify(userData));
+        setUser(userData);
+      }
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
   }, []);
 
   const login = async (username: string, password: string): Promise<boolean> => {

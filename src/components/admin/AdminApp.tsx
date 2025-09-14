@@ -8,7 +8,7 @@ import AdminDashboard from './AdminDashboard';
 import CarsTable from './CarsTable';
 import CarForm from './CarForm';
 import LeadsManager from './LeadsManager';
-
+import ChatPanel from './ChatPanel';
 import SitemapManager from './SitemapManager';
 import SettingsManager from './SettingsManager';
 import { Plus } from 'lucide-react';
@@ -153,7 +153,7 @@ const AdminAppContent: React.FC = () => {
 
     switch (currentPage) {
       case 'dashboard':
-        return <AdminDashboard cars={cars} />;
+        return <AdminDashboard cars={cars} onAddNewCar={handleAddNewCar} />;
       
       case 'cars':
         return (
@@ -179,6 +179,9 @@ const AdminAppContent: React.FC = () => {
       
       case 'leads':
         return <LeadsManager />;
+      
+      case 'chat':
+        return <ChatPanel />;
       
       case 'sitemap':
         return <SitemapManager />;

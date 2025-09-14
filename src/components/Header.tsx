@@ -14,14 +14,9 @@ const Header = () => {
       <div className="flex justify-between items-center px-8 h-full">
         {/* Logo */}
         <div className="flex items-center gap-3">
-          <img 
-            src="/SLC LOGO.jpg" 
-            alt="Strong Luxury Cars" 
-            className="w-12 h-12 object-contain"
-          />
           <div className="flex flex-col">
-            <span className="text-xl font-bold text-slc-bronze hebrew"> Strong Luxury Cars </span>
-            <span className="text-xs text-slc-white/80 english">Strong Luxury Cars</span>
+            <span className="text-xl font-bold text-slc-bronze hebrew">מיטב הרכב</span>
+            <span className="text-xs text-slc-white/80 english">Meitav HaRechev</span>
           </div>
         </div>
         
@@ -29,11 +24,11 @@ const Header = () => {
         <div className="hidden md:flex items-center gap-6 text-sm">
           <div className="flex items-center gap-2">
             <Phone className="w-4 h-4" />
-            <span>09-123-4567</span>
+            <span>050-7422522</span>
           </div>
           <div className="flex items-center gap-2">
             <MapPin className="w-4 h-4" />
-            <span>נתניה, ישראל</span>
+            <span>חדרה, ישראל</span>
           </div>
         </div>
         
@@ -41,15 +36,12 @@ const Header = () => {
         <nav className="hidden lg:flex items-center gap-8">
           <a href="#home" className="hover:text-slc-bronze transition-colors duration-300">בית</a>
           <a href="#cars" className="hover:text-slc-bronze transition-colors duration-300">רכבים למכירה</a>
+          <a href="/search" className="hover:text-slc-bronze transition-colors duration-300">חיפוש מתקדם</a>
           <a href="#services" className="hover:text-slc-bronze transition-colors duration-300">שירותים</a>
           <a href="#about" className="hover:text-slc-bronze transition-colors duration-300">אודות</a>
           <a href="#contact" className="hover:text-slc-bronze transition-colors duration-300">צור קשר</a>
         </nav>
         
-        {/* CTA Button */}
-        <a href="#cars" className="btn-primary">
-          צפה ברכבים
-        </a>
       </div>
     </header>
   );

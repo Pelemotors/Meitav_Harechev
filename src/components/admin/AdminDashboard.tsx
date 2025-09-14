@@ -1,12 +1,14 @@
 import React from 'react';
-import { Car, TrendingUp, Users, Eye } from 'lucide-react';
+import { Car, TrendingUp, Users, Eye, MessageSquare } from 'lucide-react';
 import { Car as CarType } from '../../types';
+import ChatPanel from './ChatPanel';
 
 interface AdminDashboardProps {
   cars: CarType[];
+  onAddNewCar?: () => void;
 }
 
-const AdminDashboard: React.FC<AdminDashboardProps> = ({ cars }) => {
+const AdminDashboard: React.FC<AdminDashboardProps> = ({ cars, onAddNewCar }) => {
   const activeCars = cars.filter(car => car.isActive);
   const totalValue = cars.reduce((sum, car) => sum + car.price, 0);
   const averagePrice = cars.length > 0 ? totalValue / cars.length : 0;
@@ -131,7 +133,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ cars }) => {
           <h2 className="text-xl font-bold text-darkBlue mb-4">פעולות מהירות</h2>
           <div className="space-y-3">
             <button 
-              onClick={() => window.location.href = '#cars'}
+              onClick={onAddNewCar}
               className="w-full bg-primary text-white p-4 rounded-lg hover:bg-primary/90 transition-colors text-right"
             >
               <div className="flex items-center gap-3">
@@ -151,12 +153,12 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ cars }) => {
             </button>
             
             <button 
-              onClick={() => alert('ניהול לקוחות יתווסף בגרסה הבאה')}
-              className="w-full bg-gray-100 text-gray-700 p-4 rounded-lg hover:bg-gray-200 transition-colors text-right"
+              onClick={() => window.location.href = '#chat'}
+              className="w-full bg-blue-100 text-blue-700 p-4 rounded-lg hover:bg-blue-200 transition-colors text-right"
             >
               <div className="flex items-center gap-3">
-                <Users className="w-5 h-5" />
-                <span className="font-medium">ניהול לקוחות</span>
+                <MessageSquare className="w-5 h-5" />
+                <span className="font-medium">עוזר AI</span>
               </div>
             </button>
           </div>

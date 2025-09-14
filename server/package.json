@@ -11,7 +11,10 @@
     "api:dev": "nodemon api-server.js"
   },
   "dependencies": {
+    "@ai-sdk/openai": "^2.0.24",
+    "@huggingface/inference": "^4.7.1",
     "@supabase/supabase-js": "^2.53.0",
+    "ai": "^5.0.34",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
     "exceljs": "^4.4.0",
@@ -19,9 +22,12 @@
     "express-rate-limit": "^8.0.1",
     "helmet": "^8.1.0",
     "joi": "^18.0.1",
+    "jsonwebtoken": "^9.0.2",
     "morgan": "^1.10.1",
     "multer": "^2.0.2",
-    "xlsx": "^0.18.5"
+    "node-cache": "^5.1.2",
+    "xlsx": "^0.18.5",
+    "zod": "^4.1.5"
   },
   "devDependencies": {
     "axios": "^1.6.0",

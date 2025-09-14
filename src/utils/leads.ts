@@ -59,7 +59,7 @@ const sendWhatsAppWelcomeMessage = async (lead: Lead): Promise<void> => {
 
   const message = `שלום ${lead.firstName}! 
 
-תודה על פנייתך ל-Strong Luxury Cars 🚗
+תודה על פנייתך ל-מיטב הרכב 🚗
 
 נציגנו יצור איתך קשר בהקדם האפשרי עם פרטים על הרכבים המתאימים לך.
 
@@ -69,7 +69,7 @@ https://strongluxurycars.com
 לשאלות דחופות: 050-1234567
 
 בברכה,
-צוות Strong Luxury Cars`;
+צוות מיטב הרכב`;
 
   await sendWhatsAppMessage(lead.whatsapp || lead.phone, message);
   
@@ -86,7 +86,7 @@ https://strongluxurycars.com
 const sendWebsiteWelcomeMessage = async (lead: Lead): Promise<void> => {
   const message = `שלום ${lead.firstName},
 
-תודה על פנייתך ל-Strong Luxury Cars!
+תודה על פנייתך ל-מיטב הרכב!
 
 קיבלנו את פנייתך ונציגנו יצור איתך קשר בהקדם האפשרי.
 
@@ -99,7 +99,7 @@ ${lead.budget ? `תקציב: ${new Intl.NumberFormat('he-IL', { style: 'currency
 לשאלות דחופות: 050-1234567
 
 בברכה,
-צוות Strong Luxury Cars`;
+צוות מיטב הרכב`;
 
   // TODO: Implement email sending
   console.log('Sending email:', message);
@@ -109,14 +109,14 @@ ${lead.budget ? `תקציב: ${new Intl.NumberFormat('he-IL', { style: 'currency
     type: 'email',
     direction: 'outbound',
     content: message,
-    subject: 'תודה על פנייתך - Strong Luxury Cars',
+    subject: 'תודה על פנייתך - מיטב הרכב',
     status: 'sent'
   });
 };
 
 // Send phone welcome message (SMS)
 const sendPhoneWelcomeMessage = async (lead: Lead): Promise<void> => {
-  const message = `שלום ${lead.firstName}! תודה על פנייתך ל-Strong Luxury Cars. נציגנו יצור איתך קשר בהקדם. לשאלות: 050-1234567`;
+  const message = `שלום ${lead.firstName}! תודה על פנייתך ל-מיטב הרכב. נציגנו יצור איתך קשר בהקדם. לשאלות: 050-1234567`;
 
   // TODO: Implement SMS sending
   console.log('Sending SMS:', message);
@@ -134,7 +134,7 @@ const sendPhoneWelcomeMessage = async (lead: Lead): Promise<void> => {
 const sendEmailWelcomeMessage = async (lead: Lead): Promise<void> => {
   const message = `שלום ${lead.firstName},
 
-תודה על פנייתך ל-Strong Luxury Cars!
+תודה על פנייתך ל-מיטב הרכב!
 
 קיבלנו את פנייתך ונציגנו יצור איתך קשר בהקדם האפשרי.
 
@@ -146,7 +146,7 @@ ${lead.whatsapp ? `WhatsApp: ${lead.whatsapp}` : ''}
 לשאלות דחופות: 050-1234567
 
 בברכה,
-צוות Strong Luxury Cars`;
+צוות מיטב הרכב`;
 
   // TODO: Implement email sending
   console.log('Sending email:', message);
@@ -156,14 +156,14 @@ ${lead.whatsapp ? `WhatsApp: ${lead.whatsapp}` : ''}
     type: 'email',
     direction: 'outbound',
     content: message,
-    subject: 'תודה על פנייתך - Strong Luxury Cars',
+    subject: 'תודה על פנייתך - מיטב הרכב',
     status: 'sent'
   });
 };
 
 // Send generic welcome message
 const sendGenericWelcomeMessage = async (lead: Lead): Promise<void> => {
-  const message = `שלום ${lead.firstName}! תודה על פנייתך ל-Strong Luxury Cars. נציגנו יצור איתך קשר בהקדם. לשאלות: 050-1234567`;
+  const message = `שלום ${lead.firstName}! תודה על פנייתך ל-מיטב הרכב. נציגנו יצור איתך קשר בהקדם. לשאלות: 050-1234567`;
 
   // Try WhatsApp first, then phone
   if (lead.whatsapp || lead.phone) {
@@ -327,7 +327,7 @@ const sendContactedNotification = async (lead: Lead): Promise<void> => {
 לשאלות: 050-1234567
 
 בברכה,
-צוות Strong Luxury Cars`;
+צוות מיטב הרכב`;
 
   if (lead.whatsapp || lead.phone) {
     await sendWhatsAppMessage(lead.whatsapp || lead.phone, message);
@@ -352,7 +352,7 @@ const sendQualifiedNotification = async (lead: Lead): Promise<void> => {
 בינתיים, תוכל לצפות במלאי הרכבים שלנו באתר.
 
 בברכה,
-צוות Strong Luxury Cars`;
+צוות מיטב הרכב`;
 
   if (lead.whatsapp || lead.phone) {
     await sendWhatsAppMessage(lead.whatsapp || lead.phone, message);
@@ -377,7 +377,7 @@ const sendProposalNotification = async (lead: Lead): Promise<void> => {
 ההצעה תקפה ל-7 ימים בלבד!
 
 בברכה,
-צוות Strong Luxury Cars`;
+צוות מיטב הרכב`;
 
   if (lead.whatsapp || lead.phone) {
     await sendWhatsAppMessage(lead.whatsapp || lead.phone, message);
@@ -399,10 +399,10 @@ const sendClosedNotification = async (lead: Lead): Promise<void> => {
 
 נציגנו יצור איתך קשר בקרוב לפרטי הגמר והמסירה.
 
-תודה שבחרת ב-Strong Luxury Cars!
+תודה שבחרת ב-מיטב הרכב!
 
 בברכה,
-צוות Strong Luxury Cars`;
+צוות מיטב הרכב`;
 
   if (lead.whatsapp || lead.phone) {
     await sendWhatsAppMessage(lead.whatsapp || lead.phone, message);
@@ -420,14 +420,14 @@ const sendClosedNotification = async (lead: Lead): Promise<void> => {
 const sendLostNotification = async (lead: Lead): Promise<void> => {
   const message = `שלום ${lead.firstName},
 
-תודה על התעניינותך ברכבי Strong Luxury Cars.
+תודה על התעניינותך ברכבי מיטב הרכב.
 
 אנו מקווים שנזכה לשרת אותך בעתיד.
 
 נשמח לעמוד לרשותך בכל שאלה או בקשה.
 
 בברכה,
-צוות Strong Luxury Cars`;
+צוות מיטב הרכב`;
 
   if (lead.whatsapp || lead.phone) {
     await sendWhatsAppMessage(lead.whatsapp || lead.phone, message);
@@ -453,7 +453,7 @@ export const sendFollowUpReminder = async (lead: Lead): Promise<void> => {
 לשאלות: 050-1234567
 
 בברכה,
-צוות Strong Luxury Cars`;
+צוות מיטב הרכב`;
 
     if (lead.whatsapp || lead.phone) {
       await sendWhatsAppMessage(lead.whatsapp || lead.phone, message);

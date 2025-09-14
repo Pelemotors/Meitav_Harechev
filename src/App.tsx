@@ -8,6 +8,7 @@ import AboutSection from './components/AboutSection';
 import ContactSection from './components/ContactSection';
 import Footer from './components/Footer';
 import CarDetailPage from './components/CarDetailPage';
+import AdvancedSearchPage from './components/AdvancedSearchPage';
 import AdminApp from './components/admin/AdminApp';
 
 function App() {
@@ -28,6 +29,7 @@ function App() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/car/:id" element={<CarDetailPage />} />
+        <Route path="/search" element={<AdvancedSearchPage />} />
         <Route path="/admin" element={<AdminApp />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

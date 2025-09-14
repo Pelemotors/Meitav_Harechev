@@ -28,6 +28,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
     colors: [],
     years: []
   });
+  const [manufacturersData, setManufacturersData] = useState(null);
   const [loading, setLoading] = useState(false);
 
   // Load filter options
@@ -35,10 +36,37 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
     const loadOptions = async () => {
       setLoading(true);
       try {
-        const options = await getFilterOptions();
-        setFilterOptions(options);
+        // Try to load from our JSON file first
+        const response = await fetch('./data/manufacturers_models.json');
+        if (response.ok) {
+          const data = await response.json();
+          setManufacturersData(data);
+          
+          const brands = data.manufacturers.map((m: any) => m.name);
+          const allModels = Object.values(data.models).flat().map((m: any) => m.name);
+          
+          setFilterOptions({
+            brands,
+            models: allModels,
+            fuelTypes: ['בנזין', 'דיזל', 'היברידי', 'חשמלי'],
+            transmissions: ['אוטומטי', 'ידני'],
+            colors: ['לבן', 'שחור', 'כסף', 'אפור', 'כחול', 'אדום', 'ירוק'],
+            years: Array.from({ length: 25 }, (_, i) => new Date().getFullYear() - i)
+          });
+        } else {
+          // Fallback to old method
+          const options = await getFilterOptions();
+          setFilterOptions(options);
+        }
       } catch (error) {
         console.error('Failed to load filter options:', error);
+        // Fallback to old method
+        try {
+          const options = await getFilterOptions();
+          setFilterOptions(options);
+        } catch (fallbackError) {
+          console.error('Fallback also failed:', fallbackError);
+        }
       } finally {
         setLoading(false);
       }
@@ -48,10 +76,17 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
   }, []);
 
   const updateFilter = (key: keyof SearchFilters, value: any) => {
-    onFiltersChange({
+    const newFilters = {
       ...filters,
       [key]: value
-    });
+    };
+    
+    // אם משנים יצרן, מאפסים את הדגם
+    if (key === 'brand') {
+      newFilters.model = undefined;
+    }
+    
+    onFiltersChange(newFilters);
   };
 
   const clearFilter = (key: keyof SearchFilters) => {
@@ -137,11 +172,21 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
                     value={filters.model || ''}
                     onChange={(e) => updateFilter('model', e.target.value || undefined)}
                     className="input-field"
+                    disabled={!filters.brand}
                   >
                     <option value="">כל הדגמים</option>
-                    {filterOptions.models.map(model => (
-                      <option key={model} value={model}>{model}</option>
-                    ))}
+                    {(() => {
+                      if (!manufacturersData || !filters.brand) {
+                        return filterOptions.models.map(model => (
+                          <option key={model} value={model}>{model}</option>
+                        ));
+                      }
+                      
+                      const manufacturerModels = manufacturersData.models[filters.brand] || [];
+                      return manufacturerModels.map((model: any) => (
+                        <option key={model.id} value={model.name}>{model.name}</option>
+                      ));
+                    })()}
                   </select>
                 </div>
               </div>

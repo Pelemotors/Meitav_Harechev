@@ -101,17 +101,32 @@ const CarDetailPage: React.FC = () => {
   const handleWhatsApp = () => {
     if (!car) return;
     
-    const message = `שלום! אני מעוניין בפרטים על הרכב: ${car.name}`;
-    const whatsappUrl = `https://wa.me/972501234567?text=${encodeURIComponent(message)}`;
+    // הצגת חלון בחירה בין אלון ואסי
+    const selectedAgent = prompt(
+      'למי תרצה לשלוח הודעה?\n' +
+      '1 - אלון (050-7422522)\n' +
+      '2 - אסי (050-5666620)\n\n' +
+      'הקלד 1 או 2:'
+    );
     
-    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    let phoneNumber = '';
+    let agentName = '';
     
-    if (isMobile) {
-      window.open(whatsappUrl, '_blank');
+    if (selectedAgent === '1') {
+      phoneNumber = '972507422522';
+      agentName = 'אלון';
+    } else if (selectedAgent === '2') {
+      phoneNumber = '972505666620';
+      agentName = 'אסי';
     } else {
-      // במחשב נפתח את הטופס צור קשר
-      document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
+      alert('אנא בחר נציג תקין (1 או 2)');
+      return;
     }
+    
+    const message = `שלום ${agentName}, ראיתי את הרכב ${car.name} באתר שלכם ורציתי לדעת האם הוא עדיין זמין למכירה?`;
+    const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+    
+    window.open(whatsappUrl, '_blank');
   };
 
   const handlePhoneCall = () => {

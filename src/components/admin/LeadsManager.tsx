@@ -1,123 +1,127 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Search, Filter, Download, Upload, BarChart3, MessageCircle, Phone, Mail, Calendar, Tag, User, DollarSign } from 'lucide-react';
-import { Lead, Car, User as UserType } from '../../types';
+import { 
+  Users, 
+  Phone, 
+  Mail, 
+  Calendar, 
+  Filter, 
+  Search, 
+  Plus,
+  Eye,
+  Edit,
+  Trash2,
+  MessageSquare,
+  CheckCircle,
+  Clock,
+  AlertCircle,
+  Star
+} from 'lucide-react';
 import { supabase } from '../../utils/supabase';
-import { Button, Badge, Card } from '../ui';
-import LeadsTable from './LeadsTable';
-import LeadDetail from './LeadDetail';
-import LeadForm from './LeadForm';
 
-interface LeadsManagerProps {
-  className?: string;
+interface Lead {
+  id: string;
+  first_name: string;
+  last_name?: string;
+  phone: string;
+  email?: string;
+  lead_type: string;
+  source: string;
+  status: string;
+  priority: string;
+  created_at: string;
+  last_contact_at?: string;
+  communications_count: number;
+  pending_tasks: number;
+  next_task_due?: string;
+  assigned_to?: string;
+  assigned_to_email?: string;
 }
 
-const LeadsManager: React.FC<LeadsManagerProps> = ({ className = '' }) => {
+interface LeadFilters {
+  status: string;
+  priority: string;
+  lead_type: string;
+  source: string;
+  assigned_to: string;
+  date_from: string;
+  date_to: string;
+}
+
+const LeadsManager: React.FC = () => {
   const [leads, setLeads] = useState<Lead[]>([]);
-  const [cars, setCars] = useState<Car[]>([]);
-  const [users, setUsers] = useState<UserType[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
-  const [showLeadForm, setShowLeadForm] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [statusFilter, setStatusFilter] = useState<string>('all');
-  const [priorityFilter, setPriorityFilter] = useState<string>('all');
-  const [assignedFilter, setAssignedFilter] = useState<string>('all');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filters, setFilters] = useState<LeadFilters>({
+    status: '',
+    priority: '',
+    lead_type: '',
+    source: '',
+    assigned_to: '',
+    date_from: '',
+    date_to: ''
+  });
+  const [selectedLeads, setSelectedLeads] = useState<string[]>([]);
+  const [showFilters, setShowFilters] = useState(false);
 
-  useEffect(() => {
-    fetchLeads();
-    fetchCars();
-    fetchUsers();
-  }, []);
-
+  // טעינת לידים
   const fetchLeads = async () => {
     try {
       setLoading(true);
       const { data, error } = await supabase
-        .from('leads')
-        .select(`
-          *,
-          cars:interest_in_car(id, name, brand, model, price),
-          users:assigned_to(id, username, email)
-        `)
+        .from('lead_summary')
+        .select('*')
         .order('created_at', { ascending: false });
 
       if (error) throw error;
       setLeads(data || []);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'שגיאה בטעינת לידים');
+    } catch (error) {
+      console.error('Error fetching leads:', error);
     } finally {
       setLoading(false);
     }
   };
 
-  const fetchCars = async () => {
+  useEffect(() => {
+    fetchLeads();
+  }, []);
+
+  // סינון לידים
+  const filteredLeads = leads.filter(lead => {
+    const matchesSearch = searchTerm === '' || 
+      lead.first_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      lead.last_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      lead.phone.includes(searchTerm) ||
+      lead.email?.toLowerCase().includes(searchTerm.toLowerCase());
+
+    const matchesStatus = filters.status === '' || lead.status === filters.status;
+    const matchesPriority = filters.priority === '' || lead.priority === filters.priority;
+    const matchesType = filters.lead_type === '' || lead.lead_type === filters.lead_type;
+    const matchesSource = filters.source === '' || lead.source === filters.source;
+
+    return matchesSearch && matchesStatus && matchesPriority && matchesType && matchesSource;
+  });
+
+  // עדכון סטטוס ליד
+  const updateLeadStatus = async (leadId: string, newStatus: string) => {
     try {
-      const { data, error } = await supabase
-        .from('cars')
-        .select('id, name, brand, model, price')
-        .eq('isActive', true)
-        .order('name');
-
-      if (error) throw error;
-      setCars(data || []);
-    } catch (err) {
-      console.error('Error fetching cars:', err);
-    }
-  };
-
-  const fetchUsers = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('users')
-        .select('id, username, email, role')
-        .order('username');
-
-      if (error) throw error;
-      setUsers(data || []);
-    } catch (err) {
-      console.error('Error fetching users:', err);
-    }
-  };
-
-  const handleCreateLead = async (leadData: Partial<Lead>) => {
-    try {
-      const { data, error } = await supabase
+      const { error } = await supabase
         .from('leads')
-        .insert([leadData])
-        .select()
-        .single();
+        .update({ status: newStatus })
+        .eq('id', leadId);
 
       if (error) throw error;
       
-      setLeads([data, ...leads]);
-      setShowLeadForm(false);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'שגיאה ביצירת ליד');
+      // רענון הרשימה
+      fetchLeads();
+    } catch (error) {
+      console.error('Error updating lead status:', error);
     }
   };
 
-  const handleUpdateLead = async (leadId: string, updates: Partial<Lead>) => {
-    try {
-      const { data, error } = await supabase
-        .from('leads')
-        .update(updates)
-        .eq('id', leadId)
-        .select()
-        .single();
+  // מחיקת ליד
+  const deleteLead = async (leadId: string) => {
+    if (!confirm('האם אתה בטוח שברצונך למחוק את הליד?')) return;
 
-      if (error) throw error;
-      
-      setLeads(leads.map(lead => lead.id === leadId ? data : lead));
-      if (selectedLead?.id === leadId) {
-        setSelectedLead(data);
-      }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'שגיאה בעדכון ליד');
-    }
-  };
-
-  const handleDeleteLead = async (leadId: string) => {
     try {
       const { error } = await supabase
         .from('leads')
@@ -126,298 +130,367 @@ const LeadsManager: React.FC<LeadsManagerProps> = ({ className = '' }) => {
 
       if (error) throw error;
       
-      setLeads(leads.filter(lead => lead.id !== leadId));
-      if (selectedLead?.id === leadId) {
-        setSelectedLead(null);
-      }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'שגיאה במחיקת ליד');
+      fetchLeads();
+    } catch (error) {
+      console.error('Error deleting lead:', error);
     }
   };
 
+  // קבלת צבע סטטוס
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'new': return 'info';
-      case 'contacted': return 'warning';
-      case 'qualified': return 'success';
-      case 'proposal': return 'primary';
-      case 'negotiation': return 'secondary';
-      case 'closed': return 'success';
-      case 'lost': return 'error';
-      default: return 'default';
+      case 'new': return 'bg-blue-100 text-blue-800';
+      case 'contacted': return 'bg-yellow-100 text-yellow-800';
+      case 'qualified': return 'bg-green-100 text-green-800';
+      case 'converted': return 'bg-emerald-100 text-emerald-800';
+      case 'lost': return 'bg-red-100 text-red-800';
+      default: return 'bg-gray-100 text-gray-800';
     }
   };
 
+  // קבלת צבע עדיפות
   const getPriorityColor = (priority: string) => {
     switch (priority) {
-      case 'low': return 'success';
-      case 'medium': return 'warning';
-      case 'high': return 'error';
-      case 'urgent': return 'error';
-      default: return 'default';
+      case 'urgent': return 'bg-red-100 text-red-800';
+      case 'high': return 'bg-orange-100 text-orange-800';
+      case 'medium': return 'bg-yellow-100 text-yellow-800';
+      case 'low': return 'bg-gray-100 text-gray-800';
+      default: return 'bg-gray-100 text-gray-800';
     }
   };
 
-  const getStatusText = (status: string) => {
-    const statusMap: { [key: string]: string } = {
+  // קבלת שם סטטוס בעברית
+  const getStatusName = (status: string) => {
+    const statusNames: { [key: string]: string } = {
       'new': 'חדש',
-      'contacted': 'נוצר קשר',
+      'contacted': 'יצרתי קשר',
       'qualified': 'מתאים',
-      'proposal': 'הצעה',
-      'negotiation': 'משא ומתן',
-      'closed': 'נסגר',
-      'lost': 'אבוד'
+      'converted': 'התגייר',
+      'lost': 'אבד'
     };
-    return statusMap[status] || status;
+    return statusNames[status] || status;
   };
 
-  const getPriorityText = (priority: string) => {
-    const priorityMap: { [key: string]: string } = {
-      'low': 'נמוך',
-      'medium': 'בינוני',
+  // קבלת שם עדיפות בעברית
+  const getPriorityName = (priority: string) => {
+    const priorityNames: { [key: string]: string } = {
+      'urgent': 'דחוף',
       'high': 'גבוה',
-      'urgent': 'דחוף'
+      'medium': 'בינוני',
+      'low': 'נמוך'
     };
-    return priorityMap[priority] || priority;
-  };
-
-  const filteredLeads = leads.filter(lead => {
-    const matchesSearch = 
-      lead.firstName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      lead.lastName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      lead.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      lead.phone.includes(searchQuery);
-    
-    const matchesStatus = statusFilter === 'all' || lead.status === statusFilter;
-    const matchesPriority = priorityFilter === 'all' || lead.priority === priorityFilter;
-    const matchesAssigned = assignedFilter === 'all' || lead.assignedTo === assignedFilter;
-    
-    return matchesSearch && matchesStatus && matchesPriority && matchesAssigned;
-  });
-
-  const stats = {
-    total: leads.length,
-    new: leads.filter(l => l.status === 'new').length,
-    contacted: leads.filter(l => l.status === 'contacted').length,
-    qualified: leads.filter(l => l.status === 'qualified').length,
-    closed: leads.filter(l => l.status === 'closed').length,
-    urgent: leads.filter(l => l.priority === 'urgent').length
+    return priorityNames[priority] || priority;
   };
 
   if (loading) {
     return (
-      <div className={`space-y-6 ${className}`}>
-        <div className="text-center py-12">
-          <div className="animate-spin w-8 h-8 border-2 border-slc-bronze border-t-transparent rounded-full mx-auto mb-4" />
-          <p className="text-slc-gray hebrew">טוען לידים...</p>
-        </div>
+      <div className="flex items-center justify-center h-64">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
       </div>
     );
   }
 
   return (
-    <div className={`space-y-6 ${className}`}>
-      {/* Header */}
-      <div className="flex items-center justify-between">
+    <div className="space-y-6">
+      {/* כותרת וכלי בקרה */}
+      <div className="flex justify-between items-center">
         <div>
-          <h2 className="heading-2 text-slc-dark hebrew">ניהול לידים</h2>
-          <p className="text-slc-gray hebrew">ניהול ועקיבה אחר לידים ופניות</p>
+          <h1 className="text-2xl font-bold text-gray-900">ניהול לידים</h1>
+          <p className="text-gray-600">ניהול ועקיבה אחר לידים פוטנציאליים</p>
         </div>
-        
-        <div className="flex items-center gap-3">
-          <Button
-            variant="outline"
-            onClick={() => {/* TODO: Export functionality */}}
-            className="flex items-center gap-2"
+        <div className="flex gap-3">
+          <button
+            onClick={() => setShowFilters(!showFilters)}
+            className="btn-secondary flex items-center gap-2"
           >
-            <Download className="w-4 h-4" />
-            ייצוא
-          </Button>
-          
-          <Button
-            variant="outline"
-            onClick={() => {/* TODO: Import functionality */}}
-            className="flex items-center gap-2"
-          >
-            <Upload className="w-4 h-4" />
-            ייבוא
-          </Button>
-          
-          <Button
-            variant="primary"
-            onClick={() => setShowLeadForm(true)}
-            className="flex items-center gap-2"
-          >
+            <Filter className="w-4 h-4" />
+            סינון
+          </button>
+          <button className="btn-primary flex items-center gap-2">
             <Plus className="w-4 h-4" />
             ליד חדש
-          </Button>
+          </button>
         </div>
       </div>
 
-      {/* Stats Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-        <Card className="p-4 text-center">
-          <div className="text-2xl font-bold text-slc-dark">{stats.total}</div>
-          <div className="text-sm text-slc-gray hebrew">סה"כ לידים</div>
-        </Card>
-        
-        <Card className="p-4 text-center">
-          <div className="text-2xl font-bold text-slc-info">{stats.new}</div>
-          <div className="text-sm text-slc-gray hebrew">חדשים</div>
-        </Card>
-        
-        <Card className="p-4 text-center">
-          <div className="text-2xl font-bold text-slc-warning">{stats.contacted}</div>
-          <div className="text-sm text-slc-gray hebrew">נוצר קשר</div>
-        </Card>
-        
-        <Card className="p-4 text-center">
-          <div className="text-2xl font-bold text-slc-success">{stats.qualified}</div>
-          <div className="text-sm text-slc-gray hebrew">מתאימים</div>
-        </Card>
-        
-        <Card className="p-4 text-center">
-          <div className="text-2xl font-bold text-slc-success">{stats.closed}</div>
-          <div className="text-sm text-slc-gray hebrew">נסגרו</div>
-        </Card>
-        
-        <Card className="p-4 text-center">
-          <div className="text-2xl font-bold text-slc-error">{stats.urgent}</div>
-          <div className="text-sm text-slc-gray hebrew">דחופים</div>
-        </Card>
+      {/* סטטיסטיקות */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div className="bg-white p-6 rounded-lg shadow-sm border">
+          <div className="flex items-center">
+            <div className="p-2 bg-blue-100 rounded-lg">
+              <Users className="w-6 h-6 text-blue-600" />
+            </div>
+            <div className="mr-4">
+              <p className="text-sm font-medium text-gray-600">סה"כ לידים</p>
+              <p className="text-2xl font-bold text-gray-900">{leads.length}</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-white p-6 rounded-lg shadow-sm border">
+          <div className="flex items-center">
+            <div className="p-2 bg-green-100 rounded-lg">
+              <CheckCircle className="w-6 h-6 text-green-600" />
+            </div>
+            <div className="mr-4">
+              <p className="text-sm font-medium text-gray-600">התגיירו</p>
+              <p className="text-2xl font-bold text-gray-900">
+                {leads.filter(l => l.status === 'converted').length}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-white p-6 rounded-lg shadow-sm border">
+          <div className="flex items-center">
+            <div className="p-2 bg-yellow-100 rounded-lg">
+              <Clock className="w-6 h-6 text-yellow-600" />
+            </div>
+            <div className="mr-4">
+              <p className="text-sm font-medium text-gray-600">ממתינים</p>
+              <p className="text-2xl font-bold text-gray-900">
+                {leads.filter(l => l.status === 'new').length}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-white p-6 rounded-lg shadow-sm border">
+          <div className="flex items-center">
+            <div className="p-2 bg-red-100 rounded-lg">
+              <AlertCircle className="w-6 h-6 text-red-600" />
+            </div>
+            <div className="mr-4">
+              <p className="text-sm font-medium text-gray-600">דחופים</p>
+              <p className="text-2xl font-bold text-gray-900">
+                {leads.filter(l => l.priority === 'urgent').length}
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
 
-      {/* Filters */}
-      <Card className="p-6">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-slc-gray mb-2 hebrew">
-              חיפוש
-            </label>
+      {/* סינון וחיפוש */}
+      <div className="bg-white p-6 rounded-lg shadow-sm border">
+        <div className="flex gap-4 mb-4">
+          <div className="flex-1">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-slc-gray" />
+              <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
               <input
                 type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="חיפוש לפי שם, אימייל או טלפון..."
-                className="input-field pl-10 w-full"
+                placeholder="חיפוש לידים..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full pl-4 pr-10 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-right"
               />
             </div>
           </div>
-          
-          <div>
-            <label className="block text-sm font-medium text-slc-gray mb-2 hebrew">
-              סטטוס
-            </label>
+        </div>
+
+        {showFilters && (
+          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
             <select
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
-              className="input-field w-full"
+              value={filters.status}
+              onChange={(e) => setFilters({...filters, status: e.target.value})}
+              className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-right"
             >
-              <option value="all">כל הסטטוסים</option>
+              <option value="">כל הסטטוסים</option>
               <option value="new">חדש</option>
-              <option value="contacted">נוצר קשר</option>
+              <option value="contacted">יצרתי קשר</option>
               <option value="qualified">מתאים</option>
-              <option value="proposal">הצעה</option>
-              <option value="negotiation">משא ומתן</option>
-              <option value="closed">נסגר</option>
-              <option value="lost">אבוד</option>
+              <option value="converted">התגייר</option>
+              <option value="lost">אבד</option>
             </select>
-          </div>
-          
-          <div>
-            <label className="block text-sm font-medium text-slc-gray mb-2 hebrew">
-              עדיפות
-            </label>
+
             <select
-              value={priorityFilter}
-              onChange={(e) => setPriorityFilter(e.target.value)}
-              className="input-field w-full"
+              value={filters.priority}
+              onChange={(e) => setFilters({...filters, priority: e.target.value})}
+              className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-right"
             >
-              <option value="all">כל העדיפויות</option>
-              <option value="low">נמוך</option>
-              <option value="medium">בינוני</option>
-              <option value="high">גבוה</option>
+              <option value="">כל העדיפויות</option>
               <option value="urgent">דחוף</option>
+              <option value="high">גבוה</option>
+              <option value="medium">בינוני</option>
+              <option value="low">נמוך</option>
             </select>
-          </div>
-          
-          <div>
-            <label className="block text-sm font-medium text-slc-gray mb-2 hebrew">
-              מוקצה ל
-            </label>
+
             <select
-              value={assignedFilter}
-              onChange={(e) => setAssignedFilter(e.target.value)}
-              className="input-field w-full"
+              value={filters.lead_type}
+              onChange={(e) => setFilters({...filters, lead_type: e.target.value})}
+              className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-right"
             >
-              <option value="all">כל המשתמשים</option>
-              {users.map(user => (
-                <option key={user.id} value={user.id}>
-                  {user.username}
-                </option>
-              ))}
+              <option value="">כל הסוגים</option>
+              <option value="general">כללי</option>
+              <option value="car_inquiry">חקירה על רכב</option>
+              <option value="financing">מימון</option>
+              <option value="service">שירות</option>
             </select>
-          </div>
-        </div>
-      </Card>
 
-      {/* Error Display */}
-      {error && (
-        <div className="p-4 bg-slc-error/10 border border-slc-error/20 rounded-lg">
-          <p className="text-slc-error text-center hebrew">{error}</p>
-        </div>
-      )}
-
-      {/* Main Content */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Leads Table */}
-        <div className="lg:col-span-2">
-          <LeadsTable
-            leads={filteredLeads}
-            onSelectLead={setSelectedLead}
-            onUpdateLead={handleUpdateLead}
-            onDeleteLead={handleDeleteLead}
-            selectedLeadId={selectedLead?.id}
-            getStatusColor={getStatusColor}
-            getPriorityColor={getPriorityColor}
-            getStatusText={getStatusText}
-            getPriorityText={getPriorityText}
-          />
-        </div>
-
-        {/* Lead Detail Sidebar */}
-        <div className="lg:col-span-1">
-          {selectedLead ? (
-            <LeadDetail
-              lead={selectedLead}
-              cars={cars}
-              users={users}
-              onUpdate={handleUpdateLead}
-              onClose={() => setSelectedLead(null)}
+            <input
+              type="date"
+              value={filters.date_from}
+              onChange={(e) => setFilters({...filters, date_from: e.target.value})}
+              placeholder="מתאריך"
+              className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
             />
-          ) : (
-            <Card className="p-8 text-center">
-              <User className="w-16 h-16 text-slc-gray mx-auto mb-4" />
-              <h3 className="heading-3 text-slc-dark mb-2 hebrew">בחר ליד</h3>
-              <p className="text-slc-gray hebrew">
-                בחר ליד מהרשימה כדי לצפות בפרטים ולנהל אותו
-              </p>
-            </Card>
-          )}
-        </div>
+
+            <input
+              type="date"
+              value={filters.date_to}
+              onChange={(e) => setFilters({...filters, date_to: e.target.value})}
+              placeholder="עד תאריך"
+              className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+            />
+
+            <button
+              onClick={() => setFilters({
+                status: '',
+                priority: '',
+                lead_type: '',
+                source: '',
+                assigned_to: '',
+                date_from: '',
+                date_to: ''
+              })}
+              className="px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50"
+            >
+              נקה סינון
+            </button>
+          </div>
+        )}
       </div>
 
-      {/* Lead Form Modal */}
-      {showLeadForm && (
-        <LeadForm
-          cars={cars}
-          users={users}
-          onSubmit={handleCreateLead}
-          onCancel={() => setShowLeadForm(false)}
-        />
-      )}
+      {/* טבלת לידים */}
+      <div className="bg-white rounded-lg shadow-sm border overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead className="bg-gray-50">
+              <tr>
+                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  ליד
+                </th>
+                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  קשר
+                </th>
+                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  סטטוס
+                </th>
+                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  עדיפות
+                </th>
+                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  תקשורת
+                </th>
+                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  משימות
+                </th>
+                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  תאריך יצירה
+                </th>
+                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  פעולות
+                </th>
+              </tr>
+            </thead>
+            <tbody className="bg-white divide-y divide-gray-200">
+              {filteredLeads.map((lead) => (
+                <tr key={lead.id} className="hover:bg-gray-50">
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="flex items-center">
+                      <div className="flex-shrink-0 h-10 w-10">
+                        <div className="h-10 w-10 rounded-full bg-gray-300 flex items-center justify-center">
+                          <Users className="w-5 h-5 text-gray-600" />
+                        </div>
+                      </div>
+                      <div className="mr-4">
+                        <div className="text-sm font-medium text-gray-900">
+                          {lead.first_name} {lead.last_name}
+                        </div>
+                        <div className="text-sm text-gray-500">
+                          {lead.lead_type === 'general' ? 'כללי' : 
+                           lead.lead_type === 'car_inquiry' ? 'חקירה על רכב' :
+                           lead.lead_type === 'financing' ? 'מימון' : 'שירות'}
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm text-gray-900">{lead.phone}</div>
+                    {lead.email && (
+                      <div className="text-sm text-gray-500">{lead.email}</div>
+                    )}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <select
+                      value={lead.status}
+                      onChange={(e) => updateLeadStatus(lead.id, e.target.value)}
+                      className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(lead.status)} border-0 focus:ring-2 focus:ring-primary`}
+                    >
+                      <option value="new">חדש</option>
+                      <option value="contacted">יצרתי קשר</option>
+                      <option value="qualified">מתאים</option>
+                      <option value="converted">התגייר</option>
+                      <option value="lost">אבד</option>
+                    </select>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${getPriorityColor(lead.priority)}`}>
+                      {getPriorityName(lead.priority)}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    <div className="flex items-center gap-1">
+                      <MessageSquare className="w-4 h-4" />
+                      {lead.communications_count}
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    {lead.pending_tasks > 0 ? (
+                      <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                        {lead.pending_tasks} ממתינות
+                      </span>
+                    ) : (
+                      <span className="text-gray-500">אין</span>
+                    )}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    {new Date(lead.created_at).toLocaleDateString('he-IL')}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                    <div className="flex gap-2 justify-end">
+                      <button className="text-primary hover:text-primary-dark">
+                        <Eye className="w-4 h-4" />
+                      </button>
+                      <button className="text-gray-600 hover:text-gray-900">
+                        <Edit className="w-4 h-4" />
+                      </button>
+                      <button 
+                        onClick={() => deleteLead(lead.id)}
+                        className="text-red-600 hover:text-red-900"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        {filteredLeads.length === 0 && (
+          <div className="text-center py-8">
+            <Users className="mx-auto h-12 w-12 text-gray-400" />
+            <h3 className="mt-2 text-sm font-medium text-gray-900">אין לידים</h3>
+            <p className="mt-1 text-sm text-gray-500">
+              {searchTerm || Object.values(filters).some(f => f) 
+                ? 'לא נמצאו לידים התואמים לסינון שלך'
+                : 'עדיין לא נוספו לידים למערכת'
+              }
+            </p>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

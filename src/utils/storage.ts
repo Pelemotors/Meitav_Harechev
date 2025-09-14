@@ -8,6 +8,14 @@ const mockCars: Car[] = [];
 // Upload media file directly to Supabase
 export const uploadMediaFile = async (file: File, carId: string): Promise<MediaFile> => {
   try {
+    // Check if user is authenticated
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    if (authError || !user) {
+      throw new Error('User must be authenticated to upload media files');
+    }
+
+    console.log('Uploading media file for authenticated user:', user.email);
+
     // Validate file size (max 50MB - Supabase limit)
     if (file.size > 50 * 1024 * 1024) {
       throw new Error('הקובץ גדול מדי. מקסימום 50MB');

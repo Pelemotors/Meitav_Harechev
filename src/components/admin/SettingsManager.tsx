@@ -14,8 +14,8 @@ interface SystemSettings {
 
 const SettingsManager: React.FC = () => {
   const [settings, setSettings] = useState<SystemSettings>({
-    siteTitle: 'Strong Luxury Cars',
-    contactEmail: 'info@strongluxurycars.com',
+    siteTitle: 'מיטב הרכב',
+    contactEmail: 'info@meitav-harechev.com',
     whatsappPhone: '972505666620',
     maintenanceMode: false,
     aboutPage: '',

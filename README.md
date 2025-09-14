@@ -1,11 +1,26 @@
-# React + TypeScript + Vite
+# מיטב הרכב - סוכנות הרכב של חדרה
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+אתר אינטרנט מודרני לסוכנות הרכב "מיטב הרכב" בחדרה.
 
-Currently, two official plugins are available:
+## אודות הפרויקט
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+מיטב הרכב היא סוכנות פרטית בחדרה שמאמינה שכל אחד צריך למצוא את הרכב שמתאים לו – גם לתקציב וגם לאורח החיים.
+
+### תכונות האתר:
+- חיפוש מתקדם לרכבים עם סליידרים אינטואיטיביים
+- מחשבון מימון רכב
+- ניהול מלאי מתקדם
+- מערכת ניהול לידים
+- אינטגרציה עם WhatsApp
+- ממשק ניהול למנהלים
+
+## טכנולוגיות
+
+- React + TypeScript
+- Vite
+- Tailwind CSS
+- Supabase (Database & Storage)
+- Lucide React (Icons)
 
 ## Expanding the ESLint configuration
 

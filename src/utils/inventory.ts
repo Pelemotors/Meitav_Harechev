@@ -621,7 +621,7 @@ class InventoryManager {
     if (item.color) keywords.push(item.color);
 
     // הוספת מילות מפתח כלליות
-    keywords.push('רכב', 'רכבי יוקרה', 'Strong Luxury Cars');
+    keywords.push('רכב', 'רכבי יוקרה', 'מיטב הרכב');
 
     return [...new Set(keywords)]; // הסרת כפילויות
   }
@@ -634,7 +634,7 @@ class InventoryManager {
       minimumFractionDigits: 0
     }).format(item.price) : '';
 
-    const title = `${item.name || ''} ${item.year || ''} - ${price} | Strong Luxury Cars`;
+    const title = `${item.name || ''} ${item.year || ''} - ${price} | מיטב הרכב`;
     const description = `${item.description || ''} רכב ${item.condition === 'new' ? 'חדש' : 'משומש'} במחיר ${price}. רכבי יוקרה איכותיים ובדוקים.`;
 
     return {

@@ -430,7 +430,7 @@ class ExcelManager {
 
     return {
       name: 'תבנית ייבוא רכבים',
-      description: 'תבנית לייבוא רכבים למערכת Strong Luxury Cars',
+      description: 'תבנית לייבוא רכבים למערכת מיטב הרכב',
       columns: this.carColumns,
       sampleData,
       validationRules

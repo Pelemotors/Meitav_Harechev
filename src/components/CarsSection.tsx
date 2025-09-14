@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Gauge, Settings, Calendar, Shuffle, ArrowUpDown, BarChart3, Eye } from 'lucide-react';
+import { Gauge, Settings, Calendar, Shuffle, ArrowUpDown, BarChart3, Eye, Calculator } from 'lucide-react';
 import { Car } from '../types';
 import { useSearch } from '../hooks/useSearch';
 import SearchBar from './SearchBar';
 import FilterPanel from './FilterPanel';
+import AdvancedCarSearch from './AdvancedCarSearch';
 import CarComparison from './CarComparison';
+import FinanceCalculator from './FinanceCalculator';
 import { Button, Badge } from './ui';
 import { useNavigate } from 'react-router-dom';
 
@@ -30,8 +32,11 @@ const CarsSection = () => {
   const { sendWhatsAppMessage } = useWhatsApp();
   const navigate = useNavigate();
   const [showFilters, setShowFilters] = useState(false);
+  const [showAdvancedSearch, setShowAdvancedSearch] = useState(false);
   const [selectedCarsForComparison, setSelectedCarsForComparison] = useState<Car[]>([]);
   const [showComparison, setShowComparison] = useState(false);
+  const [selectedCarForFinance, setSelectedCarForFinance] = useState<Car | null>(null);
+  const [showFinanceCalculator, setShowFinanceCalculator] = useState(false);
   
   const {
     cars,
@@ -58,6 +63,17 @@ const CarsSection = () => {
   useEffect(() => {
     loadFromURL();
   }, [loadFromURL]);
+
+  // Check for advanced search filters from URL
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const hasAdvancedFilters = urlParams.has('manufacturer') || urlParams.has('model') || 
+                              urlParams.has('minPrice') || urlParams.has('maxPrice');
+    
+    if (hasAdvancedFilters) {
+      setShowAdvancedSearch(true);
+    }
+  }, []);
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('he-IL', {
@@ -91,6 +107,42 @@ const CarsSection = () => {
     setSelectedCarsForComparison(selectedCarsForComparison.filter(c => c.id !== carId));
   };
 
+  const handleAdvancedSearch = (searchFilters: any) => {
+    // ממיר את הפילטרים החדשים לפילטרים הקיימים
+    const newFilters: any = {};
+    
+    if (searchFilters.manufacturer) {
+      newFilters.brand = searchFilters.manufacturer;
+    }
+    if (searchFilters.model) {
+      newFilters.model = searchFilters.model;
+    }
+    if (searchFilters.minPrice) {
+      newFilters.priceFrom = searchFilters.minPrice;
+    }
+    if (searchFilters.maxPrice) {
+      newFilters.priceTo = searchFilters.maxPrice;
+    }
+    
+    updateFilters(newFilters);
+    setShowAdvancedSearch(false);
+  };
+
+  const handleClearAdvancedSearch = () => {
+    clearFilters();
+    setShowAdvancedSearch(false);
+  };
+
+  const handleOpenFinanceCalculator = (car: Car) => {
+    setSelectedCarForFinance(car);
+    setShowFinanceCalculator(true);
+  };
+
+  const handleCloseFinanceCalculator = () => {
+    setShowFinanceCalculator(false);
+    setSelectedCarForFinance(null);
+  };
+
   if (loading && cars.length === 0) {
     return (
       <section id="cars" className="section bg-slc-light-gray">
@@ -108,30 +160,65 @@ const CarsSection = () => {
     <section id="cars" className="section bg-slc-light-gray">
       <div className="container mx-auto px-8">
         <div className="text-center mb-12">
-          <h2 className="heading-2 text-slc-dark mb-4">רכבי יוקרה למכירה</h2>
-          <p className="body-text text-slc-gray">רכבי יוקרה איכותיים ובדוקים במחירים תחרותיים</p>
+          <h2 className="heading-2 text-slc-dark mb-4">רכב שמתאים בדיוק לכם</h2>
+          <p className="body-text text-slc-gray max-w-4xl mx-auto">
+            מחפשים רכב ראשון? רכב משפחתי? או אולי רכב יוקרתי?<br />
+            במיטב הרכב תמצאו מגוון רחב של אפשרויות:<br />
+            רכבים נגישים במחיר התחלתי של 5,000 ₪, רכבים משפחתיים שמעניקים שקט נפשי וביטחון, ורכבים חדשים עם אחריות מלאה.<br />
+            לא משנה מה התקציב שלכם – אצלנו תמצאו את הרכב הנכון.
+          </p>
         </div>
 
         {/* Search and Filter Section */}
         <div className="mb-8 space-y-6">
-          {/* Search Bar */}
-          <SearchBar
-            onSearch={search}
-            onClear={() => search('')}
-            placeholder="חיפוש רכבי יוקרה..."
-            showFilters={true}
-            onToggleFilters={() => setShowFilters(!showFilters)}
-            isLoading={loading}
-          />
+          {/* Toggle between search modes */}
+          <div className="flex justify-center gap-4 mb-6">
+            <Button
+              variant={!showAdvancedSearch ? 'primary' : 'outline'}
+              onClick={() => setShowAdvancedSearch(false)}
+              className="px-6"
+            >
+              חיפוש פשוט
+            </Button>
+            <Button
+              variant={showAdvancedSearch ? 'primary' : 'outline'}
+              onClick={() => setShowAdvancedSearch(true)}
+              className="px-6"
+            >
+              חיפוש מתקדם
+            </Button>
+          </div>
 
-          {/* Filter Panel */}
-          <FilterPanel
-            filters={filters}
-            onFiltersChange={updateFilters}
-            onClearFilters={clearFilters}
-            isOpen={showFilters}
-            onToggle={() => setShowFilters(!showFilters)}
-          />
+          {/* Simple Search */}
+          {!showAdvancedSearch && (
+            <>
+              <SearchBar
+                onSearch={search}
+                onClear={() => search('')}
+                placeholder="חיפוש רכב..."
+                showFilters={true}
+                onToggleFilters={() => setShowFilters(!showFilters)}
+                isLoading={loading}
+              />
+
+              <FilterPanel
+                filters={filters}
+                onFiltersChange={updateFilters}
+                onClearFilters={clearFilters}
+                isOpen={showFilters}
+                onToggle={() => setShowFilters(!showFilters)}
+              />
+            </>
+          )}
+
+          {/* Advanced Search */}
+          {showAdvancedSearch && (
+            <AdvancedCarSearch
+              onSearch={handleAdvancedSearch}
+              onClear={handleClearAdvancedSearch}
+              loading={loading}
+            />
+          )}
 
           {/* Sort and Controls */}
           <div className="flex flex-wrap items-center justify-between gap-4">
@@ -256,24 +343,35 @@ const CarsSection = () => {
                 </div>
               </div>
               
-              <div className="flex gap-2">
-                <Button 
-                  variant="primary"
-                  className="flex-1"
-                  onClick={() => navigate(`/car/${car.id}`)}
-                >
-                  <Eye className="w-4 h-4 ml-2" />
-                  פרטים מלאים
-                </Button>
+              <div className="space-y-2">
+                <div className="flex gap-2">
+                  <Button 
+                    variant="primary"
+                    className="flex-1"
+                    onClick={() => navigate(`/car/${car.id}`)}
+                  >
+                    <Eye className="w-4 h-4 ml-2" />
+                    פרטים מלאים
+                  </Button>
+                  
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handleAddToComparison(car)}
+                    disabled={selectedCarsForComparison.find(c => c.id === car.id) !== undefined}
+                    className="px-3"
+                  >
+                    <BarChart3 className="w-4 h-4" />
+                  </Button>
+                </div>
                 
                 <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => handleAddToComparison(car)}
-                  disabled={selectedCarsForComparison.find(c => c.id === car.id) !== undefined}
-                  className="px-3"
+                  variant="secondary"
+                  className="w-full"
+                  onClick={() => handleOpenFinanceCalculator(car)}
                 >
-                  <BarChart3 className="w-4 h-4" />
+                  <Calculator className="w-4 h-4 ml-2" />
+                  מחשבון מימון
                 </Button>
               </div>
             </div>
@@ -335,6 +433,39 @@ const CarsSection = () => {
                   onRemoveCar={handleRemoveFromComparison}
                   onAddCar={handleAddToComparison}
                   maxCars={3}
+                />
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Finance Calculator Modal */}
+        {showFinanceCalculator && selectedCarForFinance && (
+          <div className="fixed inset-0 bg-slc-black/50 z-50 flex items-center justify-center p-4">
+            <div className="w-full max-w-4xl max-h-[90vh] overflow-hidden bg-slc-white rounded-xl">
+              <div className="p-6 border-b border-slc-light-gray">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="heading-2 text-slc-dark hebrew">מחשבון מימון</h3>
+                    <p className="text-slc-gray hebrew">
+                      {selectedCarForFinance.name} - ₪{selectedCarForFinance.price.toLocaleString()}
+                    </p>
+                  </div>
+                  <Button
+                    variant="ghost"
+                    onClick={handleCloseFinanceCalculator}
+                  >
+                    סגור
+                  </Button>
+                </div>
+              </div>
+              
+              <div className="p-6 overflow-y-auto max-h-[70vh]">
+                <FinanceCalculator
+                  initialPrice={selectedCarForFinance.price}
+                  onCalculationChange={(calculation) => {
+                    console.log('חישוב מימון:', calculation);
+                  }}
                 />
               </div>
             </div>

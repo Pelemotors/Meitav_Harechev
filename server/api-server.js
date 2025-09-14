@@ -8,14 +8,15 @@ const Joi = require('joi');
 const XLSX = require('xlsx');
 const ExcelJS = require('exceljs');
 const { createClient } = require('@supabase/supabase-js');
+const aiRoutes = require('./ai-routes');
 require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 3002;
 
 // Supabase client
-const supabaseUrl = process.env.VITE_SUPABASE_URL;
-const supabaseKey = process.env.VITE_SUPABASE_ANON_KEY;
+const supabaseUrl = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL;
+const supabaseKey = process.env.SUPABASE_ANON_KEY || process.env.VITE_SUPABASE_ANON_KEY;
 
 if (!supabaseUrl || !supabaseKey) {
   console.error('Missing Supabase environment variables');
@@ -120,6 +121,9 @@ const handleSupabaseError = (error, res) => {
 };
 
 // Routes
+
+// AI Routes
+app.use('/api/ai', aiRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {
@@ -1293,6 +1297,16 @@ app.listen(PORT, () => {
   console.log(`API server running on port ${PORT}`);
   console.log('Available endpoints:');
   console.log('- GET /api/health - Health check');
+  console.log('- POST /api/ai/chat - AI Chat endpoint');
+  console.log('- GET /api/ai/providers - Available AI providers');
+  console.log('- GET /api/ai/health - AI services health check');
+  console.log('- GET /api/ai/analytics/sales - Sales analytics');
+  console.log('- GET /api/ai/analytics/leads - Leads analytics');
+  console.log('- GET /api/ai/analytics/inventory - Inventory analytics');
+  console.log('- GET /api/ai/analytics/performance - Performance analytics');
+  console.log('- GET /api/ai/usage - User usage statistics');
+  console.log('- GET /api/ai/costs - Cost summary');
+  console.log('- GET /api/ai/performance - Performance statistics');
   console.log('- GET /api/vehicles - List vehicles');
   console.log('- GET /api/vehicles/:id - Get single vehicle');
   console.log('- POST /api/vehicles - Create vehicle');

@@ -3,6 +3,7 @@ import { Car, MediaFile } from '../../types';
 import { Upload, X, Play, Image as ImageIcon } from 'lucide-react';
 import { validateMediaFile } from '../../utils/mediaOptimizer';
 import { uploadMediaFile, deleteMediaFile } from '../../utils/storage';
+import ManufacturerModelSelector from '../ManufacturerModelSelector';
 
 interface CarFormProps {
   car?: Car;
@@ -184,40 +185,25 @@ const CarForm: React.FC<CarFormProps> = ({ car, onSave, onCancel, onMediaChange 
           </p>
         </div>
         
+        {/* בחירת יצרן ודגם */}
+        <div className="mb-6">
+          <ManufacturerModelSelector
+            selectedManufacturer={formData.brand}
+            selectedModel={formData.model}
+            onManufacturerChange={(manufacturer) => 
+              setFormData(prev => ({ ...prev, brand: manufacturer }))
+            }
+            onModelChange={(model) => 
+              setFormData(prev => ({ ...prev, model: model }))
+            }
+            required
+          />
+        </div>
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <label className="block text-right text-gray-700 font-medium mb-2">
-              יצרן *
-            </label>
-            <input
-              type="text"
-              name="brand"
-              value={formData.brand}
-              onChange={handleInputChange}
-              required
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-right"
-              placeholder="טויוטה, הונדה, מאזדה..."
-            />
-          </div>
-
-          <div>
-            <label className="block text-right text-gray-700 font-medium mb-2">
-              דגם *
-            </label>
-            <input
-              type="text"
-              name="model"
-              value={formData.model}
-              onChange={handleInputChange}
-              required
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-right"
-              placeholder="קורולה, סיוויק, מאזדה 3..."
-            />
-          </div>
-
-          <div>
-            <label className="block text-right text-gray-700 font-medium mb-2">
-              שנת ייצור *
+              שנה *
             </label>
             <input
               type="number"
@@ -242,8 +228,8 @@ const CarForm: React.FC<CarFormProps> = ({ car, onSave, onCancel, onMediaChange 
               onChange={handleInputChange}
               required
               min="0"
+              step="100"
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-right"
-              placeholder="85000"
             />
           </div>
 
