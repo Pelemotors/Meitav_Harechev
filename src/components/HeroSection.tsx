@@ -73,7 +73,7 @@ const HeroSection = () => {
                 <div className="flex gap-8 justify-end text-neutral-700">
                   <div className="hover-scale bg-white/80 backdrop-blur-sm p-4 rounded-xl shadow-lg border border-neutral-200">
                     <span className="font-bold text-primary-600">אסי:</span> 
-                    <span className="font-mono text-lg text-neutral-800">050-7422522 / 053-5335540</span>
+                    <span className="font-mono text-lg text-neutral-800">050-7422522</span>
                   </div>
                   <div className="hover-scale bg-white/80 backdrop-blur-sm p-4 rounded-xl shadow-lg border border-neutral-200">
                     <span className="font-bold text-primary-600">אלון:</span> 

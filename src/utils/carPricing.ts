@@ -47,7 +47,7 @@ export const getCheapestCar = async (): Promise<Car | null> => {
     const { data, error } = await supabase
       .from('cars')
       .select('*')
-      .eq('status', 'available')
+      .eq('is_active', true)
       .order('price', { ascending: true })
       .limit(1)
       .single();
@@ -57,6 +57,7 @@ export const getCheapestCar = async (): Promise<Car | null> => {
       return null;
     }
 
+    console.log('Cheapest car found:', data);
     return data;
   } catch (error) {
     console.error('Error in getCheapestCar:', error);
@@ -132,6 +133,8 @@ export const useCheapestCarInfo = () => {
     
     return () => clearInterval(interval);
   }, []);
+
+  console.log('useCheapestCarInfo - cheapestCar:', cheapestCar, 'cheapestPrice:', cheapestCar?.price);
 
   return { 
     cheapestCar, 
